@@ -1,7 +1,7 @@
 # Teme_anul2
 
 AA
-  -> Tema1: masini turing
+  -> Tema1: masini turing\n
   -> Tema2: complexitatea mergesort si insertionsort
 
 IOCLA
