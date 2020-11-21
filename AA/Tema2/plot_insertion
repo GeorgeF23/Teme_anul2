@@ -1,0 +1,7 @@
+set title "Insertion sort"
+set xlabel "Array length"
+set ylabel "Time(s)"
+set xrange [0:5000]
+set yrange [0: 0.5]
+plot "insertionsort.out" with lines, 4e-8 * x * x
+pause -1

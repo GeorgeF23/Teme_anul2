@@ -1,0 +1,18 @@
+Nume: FLOAREA George-Marian
+Grupa: 324CB
+
+Functia iocla_printf parcurge sirul de caractere "format" si afiseaza pe ecran fiecare caracter, cu exceptia cazului in care intalneste caractetul '%'.
+Daca se intalneste '%' compara urmatorul caracter cu specificatorii {d, u, x, c, s} sau cu '%', caz in care il afiseaza.
+    - daca se intalneste specificatorul 'd', atunci se extrage o variabila de tip int din lista de parametrii si se apeleaza functia printNumberSigned.
+    - daca se intalneste specificatorul 'u', atunci se extrage o variabila de tip unsigned int din lista de parametrii si se apeleaza functia printNumberUnsigned.
+    - daca se intalneste specificatorul 'x', atunci se extrage o variabila de tip unsigned int din lista de parametrii si se apeleaza functia printNumberHex.
+    - daca se intalneste specificatorul 'c', atunci se extrage o variabila de tip char din lista de parametrii si o afiseaza folosind write_stdout.
+    - daca se intalneste specificatorul 's', atunci se extrage o variabila de tip pointer la char din lista de parametrii si se afiseaza sirul de caractere folosind functia write_stdout.
+
+Functia printNumberUnsigned creeaza un sir de caractere alcatuit din cifrele numarului si il afiseaza folosind write_stdout.
+Functia printNumberSigned lucreaza pe 2 cazuri:
+    1. Daca numarul e negativ, atunci afiseaza un '-' si apoi apeleaza functia printNumberUnsigned cu opusul numarului.
+    2. Daca numarul e pozitiv, atunci afiseaza numarul folosind functia printNumberUnsigned.
+Functia printNumberHex converteste numarul in baza 16 si il stocheaza intr-un sir de caractere pe care il afiseaza folosind write_stdout.
+
+Functia reverseString este o functie ajutatoare care inverseaza un sir de caractere.

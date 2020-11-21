@@ -1,0 +1,7 @@
+set title "Merge sort"
+set xlabel "Array length"
+set ylabel "Time(s)"
+set xrange [0:5000]
+set yrange [0: 0.02]
+plot "mergesort.out" with lines, 6e-7 * x * log(x)
+pause -1

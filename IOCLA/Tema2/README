@@ -1,0 +1,41 @@
+Nume: Floarea George-Marian
+Grupa: 324CB
+
+1. OTP
+Parcurg atat plaintext, cat si key folosind registul ebx pe post de index.
+Fac xor intre litera din plaintext si cea din key, iar rezultatul il pastrez in registrul al.
+Mut valoarea din al in ciphertext si apoi trec la urmatoarea litera.
+
+2. Caesar
+Reduc cheia la un numar in intervalul [0, 26) cu formula key = key % 26, deoarece functia de criptare e periodica, cu perioada 26.
+Folosesc registrul ebx pentru a itera prin plaintext.
+Verific daca caracterul curent e litera, caz in care ii adaug cheia si verific sa nu fi depasit caracterul 'z' sau 'Z', caz in care scad 26 pentru a realiza deplasarea circulara.
+
+3. Vigenere
+Folosind registrul ebx iterez prin plaintext.
+Verific daca caracterul curent e litera, caz in care aplic criptarea pe el.
+Caut litera din cheie corespunzatoare literei curente din plaintext, ii aflu index-ul din alfabet si il adaug la litera din plaintext.
+Daca in urma adunarii caracterul rezultat nu este litera, atunci ii scad 26 pentru a realiza deplasarea circulara.
+
+4. Strstr
+Salvez adresele de inceput ale stringurilor haystack si needle.
+Compar primul caracter la care pointeaza haystack(esi) cu primul caracter la care pointeaza(ebx).
+	-> daca sunt egale, atunci incrementez esi si ebx pentru a verifica si urmatoarea litera
+	-> daca nu sunt egale, atunci trec la urmatoarea litera din haystack, iar needle il resetez
+Bucla se opreste atunci haystack(esi) sau needle(ebx) au ajuns la terminatorul de sir.
+	-> daca needle(ebx) a ajuns la terminatorul de sir, inseamna ca s-a gasit in needle in haystack.
+	-> daca haystack(esi) a ajuns la terminatorul de sir, inseamna ca nu s-a gasit needle
+Se returneaza:
+	-> daca nu s-a gasit, atunci se returneaza lungimea sirului + 1
+	-> daca s-a gasit, atunci se extrage index-ul scazand lungimea lui needle din index-ul unde se termina needle in haystack
+
+5. Bin to hex
+Conversia din baza 2 in baza 16 se face separand numarul binar in grupuri de cate 4 biti si convertind fiecare grup in baza 16.
+Verific daca sirul in baza 2 se poate imparti exact in grupuri de cate 4 verificand restul impartii lungimii sirului la 4.
+	-> catul impartirii va reprezenta numarul de grupuri de 4 in care se poate imparti sirul
+	-> restul va reprezenta cati biti raman fara grup
+Daca exista biti fara grup atunci in eax pun caractere de '0' la care adaug si bitii ramasi fara grup.
+Pentru fiecare grup convertesc cei 4 biti in baza 16, rezultatul fiind pastrat in edi.
+Odata calculat edi, adaug in edx caracterul corespunzator din baza 16.
+Extrag urmatorul grup de 4 biti si repet procesul pana nu mai ramane niciun grup.
+La final adaug un \n in edx si rescriu in edx adresa de inceput a sirului rezultat.
