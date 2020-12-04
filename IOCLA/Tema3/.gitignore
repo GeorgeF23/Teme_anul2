@@ -1,3 +1,5 @@
 .check.grade
 .gdb_history
 check_utils/__pycache__/
+tasks/
+check_utils/

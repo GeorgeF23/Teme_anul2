@@ -1,6 +1,6 @@
-
 section .data
-    delim db " ", 0
+    delim db " ", 0xA, 0
+    my_str db "123", 0
     format db "%s", 0xA, 0
 
 section .bss
@@ -8,8 +8,12 @@ section .bss
 
 section .text
 
-extern evaluate_ast
+extern check_atoi
+extern print_tree_inorder
+extern print_tree_preorder
+extern evaluate_tree
 extern printf
+
 global create_tree
 global iocla_atoi
 
@@ -17,19 +21,19 @@ iocla_atoi:
     push ebp
     mov ebp, esp
 
-    mov esi, [ebp + 8]  ; token
+    mov ecx, [ebp + 8]  ; token
     xor eax, eax        ; numarul convertit
 
 start:
-    movzx ebx, byte [esi]
-    inc esi
-    cmp ebx, '0'
+    movzx edx, byte [ecx]
+    inc ecx
+    cmp edx, '0'
     jb end
-    cmp ebx, '9'
+    cmp edx, '9'
     jg end
-    sub ebx, '0'
+    sub edx, '0'
     imul eax, 10
-    add eax, ebx
+    add eax, edx
     jmp start
 
 end:
@@ -41,12 +45,10 @@ create_tree:
     push ebp
     mov ebp, esp
 
+    push my_str
+    call check_atoi
+
     mov esi, [ebp + 8]
-    inc esi
-    mov [ebp + 8], esi
-    push dword [ebp + 8]
-    push format
-    call printf
 
     xor eax, eax
     leave
