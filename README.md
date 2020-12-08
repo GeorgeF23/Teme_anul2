@@ -7,6 +7,7 @@ AA
 IOCLA  
   -> Tema1: printf in C  
   -> Tema2: operatii pe string-uri  
+  -> Tema3: Construct AST tree
   
 POO  
   -> Tema1: Harta  
