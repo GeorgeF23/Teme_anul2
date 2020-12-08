@@ -30,7 +30,7 @@ iocla_atoi:
     xor ebx, ebx        ; retine 1 daca e negativ, 0 daca e pozitiv
 
     movzx edx, byte [ecx]
-    cmp edx, '-'
+    cmp edx, '-'    ; verific daca e negativ
     jne start
     inc ecx
     mov ebx, 1      ; marchez numarul ca fiind negativ
@@ -38,9 +38,9 @@ iocla_atoi:
 start:
     movzx edx, byte [ecx]
     inc ecx
-    cmp edx, '0'
+    cmp edx, '0'    ; verific daca e cifra
     jb check_negative
-    cmp edx, '9'
+    cmp edx, '9'    ; verific daca e cifra
     jg check_negative
     sub edx, '0'
     imul eax, 10
@@ -48,7 +48,7 @@ start:
     jmp start
 
 check_negative:
-    cmp ebx, 1
+    cmp ebx, 1  ; daca e negativ, atunci aplic complementul lui 2
     jne end_atoi
     neg eax
 
@@ -57,6 +57,10 @@ end_atoi:
     leave
     ret
 
+
+;; Antetul acestei functii ar fi
+;; Node *create_new_node(char *token)
+;; Aloca memorie pentru un nod nou si ii seteaza campul data
 create_new_node:
     push ebp
     mov ebp, esp
@@ -93,7 +97,7 @@ create_tree:
 
     push delim
     push esi
-    call strtok     ; scot primul operator
+    call strtok     ; scot primul element
     add esp, 8      ; refac stiva
 
     push eax    ; parametrul functiei create_new_node
@@ -110,14 +114,16 @@ start_while:
     call strtok     ; extrag urmatorul element din token
     add esp, 8      ; refac stiva
 
-    cmp eax, 0
+    cmp eax, 0      ; conditia de iesire
     je end_create_tree
+
     pop ebx         ; scot ultimul nod pus pe stiva
     movzx ecx, byte [eax]   ; salvez primul caracter din element
     movzx edx, byte [eax + 1]   ; salvez al doilea caracter din element
 
     push ecx
     push edx
+
     push eax
     call create_new_node    ; creez nodul nou
     add esp, 4      ; refac stiva
@@ -125,14 +131,14 @@ start_while:
     pop edx
     pop ecx
 
-    cmp dword [ebx + 4], 0
+    cmp dword [ebx + 4], 0  ; verific daca are copil stanga
     jne put_right
-    mov [ebx + 4], eax
-    push ebx
+    mov [ebx + 4], eax      ; daca nu are copil stanga, atunci nodul nou creat va fi copilul lui
+    push ebx        ; pun nodul extras inapoi pe stiva
     jmp check_operator
 
 put_right:
-    mov [ebx + 8], eax
+    mov [ebx + 8], eax      ; setez copilul dreapta
 
 check_operator:
     cmp ecx, '/'
@@ -140,7 +146,7 @@ check_operator:
     cmp edx, 0
     jne start_while
 
-    push eax
+    push eax    ; daca noul nou e operator, il pun pe stiva
 
     jmp start_while
 

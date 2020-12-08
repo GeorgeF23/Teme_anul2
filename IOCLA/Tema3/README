@@ -1,0 +1,27 @@
+Nume: FLOAREA George-Marian
+Grupa: 324CB
+
+iocla_atoi:
+    - verific daca numarul e negativ, iar daca e pun 1 in ebx
+    - iterez prin fiecare caracter, il convertesc la cifra si il adaug in eax
+    - la final verific folosind ebx daca e negativ, iar daca e aplic complementul lui 2 pe el
+
+create_new_node:
+    - Creeaza un nod nou si ii populeaza campul data cu informatia primita ca parametru
+    - Aloca 12 octeti folosind malloc
+    - Duplica sirul dat ca parametru si il pune in data
+    - Seteaza pointerii la copii 0
+
+create_tree:
+    - Am folosit o implementare iterativa pentru a face arborele
+    - Separarea elementelor din token se face cu strtok
+    - Prima data creez nodul radacina si il pun pe stiva
+    - Apoi iterez prin fiecare element folosind strtok si execut urmatoarele instructiuni:
+        - scot ultimul nod pus pe stiva
+        - creez un nod nou cu campul data = elementul extras de strtok
+        - daca nodul scos de pe stiva nu are copil stanga
+            - nodul nou creat va fi copilul lui stanga
+            - pun nodul inapoi pe stiva, deoarece va avea nevoie si de un copil dreapta
+        - daca nodul scos de pe stiva are copil stanga, dar nu are copil dreapta
+            - nodul nou creat va fi copilul lui dreapta
+        - daca nodul nou creat este un operator, atunci il pun si pe el pe stiva
