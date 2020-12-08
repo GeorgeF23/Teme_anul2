@@ -110,16 +110,7 @@ void print2D(struct Node *root)
   
 
 int isOperator(char *token){
-    if(token[0] == '-' && token[1] == 0){
-        return 1;
-    }
-    if(token[0] == '+' && token[1] == 0){
-        return 1;
-    }
-    if(token[0] == '/' && token[1] == 0){
-        return 1;
-    }
-    if(token[0] == '*' && token[1] == 0){
+    if(token[0] <= '/' && token[1] == 0){
         return 1;
     }
     return 0;
@@ -158,7 +149,7 @@ struct Node* construct_tree(char *token, int *index){
 int main() 
 {  
     char *token = malloc(20);
-    strcpy(token, "+ + -659597 -949003 158677");
+    strcpy(token, "1");
     int index = 0;
     struct Node *root = construct_tree(token, &index);
     print2D(root); 

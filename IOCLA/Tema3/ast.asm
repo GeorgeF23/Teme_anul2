@@ -31,15 +31,15 @@ start:
     movzx edx, byte [ecx]
     inc ecx
     cmp edx, '0'
-    jb end
+    jb end_atoi
     cmp edx, '9'
-    jg end
+    jg end_atoi
     sub edx, '0'
     imul eax, 10
     add eax, edx
     jmp start
 
-end:
+end_atoi:
     leave
     ret
 
@@ -74,6 +74,7 @@ create_tree:
     mov ebp, esp
     
     push esi    ; salvez esi
+    push ebx    ; salvez ebx
     mov esi, [ebp + 8]  ; token
 
     push delim
@@ -84,9 +85,41 @@ create_tree:
     push eax    ; parametrul functiei create_new_node
     call create_new_node    ; creez nodul nou
     add esp, 4  ; refac stiva
+    mov dword [root], eax   ; salvez radacina
+
+    push eax
 
 
-    mov dword [root], eax
+start_while:
+    push delim
+    push 0x00000000
+    call strtok     ; extrag urmatorul operator
+    add esp, 8      ; refac stiva
+
+    cmp eax, 0
+    je end_create_tree
+    pop ebx         ; scot ultimul nod pus pe stiva
+
+    push eax
+    call create_new_node    ; creez nodul nou
+    add esp, 4      ; refac stiva
+
+    cmp dword [ebx + 4], 0
+    jne put_right
+    mov [ebx + 4], eax
+    push ebx
+    jmp check_operator
+
+put_right:
+    mov [ebx + 8], eax
+
+check_operator:
+    nop
+
+    jmp start_while
+
+end_create_tree:
+    pop ebx     ; restaurez ebx
     pop esi     ; restaurez esi
     mov eax, dword [root]   ; salvez valoarea de return
     leave
