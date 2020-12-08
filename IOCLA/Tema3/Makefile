@@ -1,7 +1,7 @@
-CC=gcc
+CC=gcc -g
 CFLAGS=-m32
 ASM=nasm
-ASMFLAGS=-f elf32
+ASMFLAGS=-f elf32 -g
 
 
 
