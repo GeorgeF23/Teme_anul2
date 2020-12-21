@@ -18,7 +18,22 @@ def convert_to_matrix(formula):
     return matrix
 
 
+def solver(formula):
+    variables = extract_variables_from_formula(formula)
+
+    def backtracking(s, index):
+        
+        print(s)
+
+        for i in range(index, len(variables)):
+            s.append(variables[i])
+            backtracking(s, i + 1)
+            s.pop()
+
+    backtracking([], 0)
+
+
 with open("input.txt") as f:
     formula = f.read()
     matrix = convert_to_matrix(formula)
-    print(matrix)
+    solver(formula)
