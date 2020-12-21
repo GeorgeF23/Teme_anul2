@@ -1,7 +1,19 @@
 import re
 
+
 def extract_variables_from_formula(formula):
-    return list(set([variable.replace('~', '') for sublist in [literal.split("V") for literal in [re.sub("[()]", "", clause) for clause in formula.split("^")]] for variable in sublist]))
+    return list(
+        set(
+            [variable.replace('~', '')
+             for sublist
+             in [literal.split("V")
+                 for literal in
+                 [re.sub("[()]", "", clause)
+                  for clause in
+                  formula.split("^")]] for
+             variable in sublist]
+        )
+    )
 
 
 def convert_to_matrix(variables, formula):
@@ -25,6 +37,7 @@ def solver(formula, found_callback, not_found_callback):
     matrix = convert_to_matrix(variables, formula)
 
     found = False
+
     def check_clause(clause, interpretation):
         for literal_index, literal_value in enumerate(clause):
             if literal_value == 1 and variables[literal_index] in interpretation:
@@ -55,12 +68,13 @@ def solver(formula, found_callback, not_found_callback):
     found_callback() if found else not_found_callback()
 
 
-
 def found_interpretation():
     print("Found interpretation")
 
+
 def not_found_interpretation():
     print("Not found")
+
 
 with open("input.txt") as f:
     formula = f.read()
