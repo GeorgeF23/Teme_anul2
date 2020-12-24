@@ -45,6 +45,7 @@ def not_found_interpretation():
     print("Not found")
 
 
-with open("input.txt") as f:
-    formula = f.read()
-    solver(formula, found_interpretation, not_found_interpretation)
+if __name__ == '__main__':
+    with open("input.txt") as f:
+        formula = f.read()
+        solver(formula, found_interpretation, not_found_interpretation)
