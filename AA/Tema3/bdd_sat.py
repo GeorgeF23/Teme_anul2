@@ -92,13 +92,4 @@ def solver(formula, found_callback, not_found_callback):
 
     dfs(root, 0)
 
-    print('is_satsifiable', is_satisfiable)
-
-
-def found_interpretation():
-    print("Found interpretation")
-
-
-with open("input.txt") as f:
-    formula = f.read()
-    solver(formula, found_interpretation, None)
+    found_callback() if is_satisfiable else not_found_callback()
