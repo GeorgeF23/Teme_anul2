@@ -37,7 +37,8 @@ def generate_second_condition(X, k, graph):
         for j in range(k-1):
             clause = "("
             for l in range(j + 1, k):
-                clause += '~' + str(X[i][j]) + 'V' + '~' + str(X[i][l])
+                clause += '~' + str(X[i][j]) + 'V' + '~' + str(X[i][l]) + 'V'
+            clause = clause[:-1]
             clause += ")"
             formula += clause + "^"
     return formula[:-1]
