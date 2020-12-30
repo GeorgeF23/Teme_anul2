@@ -3,8 +3,8 @@
 AA  
   -> HW1: Simulate Turing machine in python  
   -> HW2: Measure complexity of mergesort and insertionsort  
-  -> HW3: Implement two sat solvers
-  -> HW4: Polynomial reduction from k vertex cover to SAT
+  -> HW3: Implement two sat solvers  
+  -> HW4: Polynomial reduction from k vertex cover to SAT  
 
 IOCLA  
   -> HW1: Make our own printf in C  
