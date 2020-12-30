@@ -1,13 +1,15 @@
 # Teme_anul2
 
 AA  
-  -> Tema1: masini turing  
-  -> Tema2: complexitatea mergesort si insertionsort  
+  -> HW1: Simulate Turing machine in python  
+  -> HW2: Measure complexity of mergesort and insertionsort  
+  -> HW3: Implement two sat solvers
+  -> HW4: Polynomial reduction from k vertex cover to SAT
 
 IOCLA  
-  -> Tema1: printf in C  
-  -> Tema2: operatii pe string-uri  
-  -> Tema3: Construct AST tree
+  -> HW1: Make our own printf in C 
+  -> HW2: String manipulation in assembly 
+  -> HW3: Construct AST tree in assembly
   
 POO  
   -> Tema1: Harta  
