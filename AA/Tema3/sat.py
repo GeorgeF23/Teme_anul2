@@ -1,4 +1,35 @@
-from formula_parser import extract_variables_from_formula, convert_to_matrix
+import re
+
+
+def extract_variables_from_formula(formula):
+    return list(
+        set(
+            [variable.replace('~', '')
+             for sublist
+             in [literal.split("V")
+                 for literal in
+                 [re.sub("[()]", "", clause)
+                  for clause in
+                  formula.split("^")]] for
+             variable in sublist]
+        )
+    )
+
+
+def convert_to_matrix(variables, formula):
+    matrix = []
+
+    clauses = formula.split("^")
+    for clause in clauses:
+        line = [0] * len(variables)
+        for literal in re.sub("[()]", "", clause).split("V"):
+            if literal.startswith("~"):
+                line[variables.index(literal[1:])] = -1
+            else:
+                line[variables.index(literal)] = 1
+        matrix.append(line)
+
+    return matrix
 
 
 def solver(formula, found_callback, not_found_callback):
@@ -42,3 +73,20 @@ def solver(formula, found_callback, not_found_callback):
     backtracking([], 0)
 
     found_callback() if found else not_found_callback()
+
+
+def found():
+    print('1')
+
+
+def not_found():
+    print('0')
+
+
+def main():
+    formula = input()
+    solver(formula, found, not_found)
+
+
+if __name__ == '__main__':
+    main()
