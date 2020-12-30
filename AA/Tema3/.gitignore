@@ -1,0 +1,5 @@
+input.txt
+.idea/
+__pycache__/
+execution_time.txt
+sat_testcases/
