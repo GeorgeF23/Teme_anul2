@@ -2,3 +2,4 @@ input.txt
 .idea/
 __pycache__/
 checker.py
+sat_testcases/
