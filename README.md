@@ -7,9 +7,9 @@ AA
   -> HW4: Polynomial reduction from k vertex cover to SAT
 
 IOCLA  
-  -> HW1: Make our own printf in C 
-  -> HW2: String manipulation in assembly 
-  -> HW3: Construct AST tree in assembly
+  -> HW1: Make our own printf in C  
+  -> HW2: String manipulation in assembly  
+  -> HW3: Construct AST tree in assembly  
   
 POO  
   -> Tema1: Harta  
