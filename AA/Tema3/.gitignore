@@ -1,5 +1,5 @@
 input.txt
 .idea/
 __pycache__/
-checker.py
+execution_time.txt
 sat_testcases/
