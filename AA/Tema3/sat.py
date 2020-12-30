@@ -2,6 +2,7 @@ import re
 
 
 def extract_variables_from_formula(formula):
+    """Takes the input formula as parameter and places the variables into a set"""
     return list(
         set(
             [variable.replace('~', '')
@@ -17,6 +18,7 @@ def extract_variables_from_formula(formula):
 
 
 def convert_to_matrix(variables, formula):
+    """Converts the input formula to it's matrix representation"""
     matrix = []
 
     clauses = formula.split("^")
