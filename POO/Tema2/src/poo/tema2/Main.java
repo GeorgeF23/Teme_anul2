@@ -46,6 +46,6 @@ public class Main {
                         System.err.println(e.getMessage());
                     }
             }
-        } while (!command[0].equals("exit"));
+        } while (!(command[0].equals("exit") || command[0].equals("quit")));
     }
 }
