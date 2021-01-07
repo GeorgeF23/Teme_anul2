@@ -28,7 +28,7 @@ public class Main {
                     try{
                         commandManager.executeCommand(new AddCurrency(store, new Currency(command[1], command[2], Double.parseDouble(command[3]))));
                     } catch(DuplicateCurrencyException e){
-                        System.out.println(e.getMessage());
+                        System.err.println(e.getMessage());
                     }
                     break;
             }
