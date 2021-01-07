@@ -4,6 +4,10 @@ import poo.tema2.Exceptions.DuplicateCurrencyException;
 import poo.tema2.Store;
 import poo.tema2.Currency;
 
+
+/**
+ * Clasa care implementeaza comanda de adaugare a unei noi monede in store
+ */
 public class AddCurrency implements ICommand {
 
     private Store store;
@@ -15,6 +19,9 @@ public class AddCurrency implements ICommand {
     }
 
 
+    /**
+     * Adauga o moneda noua in store
+     */
     @Override
     public void execute() {
         if(store.searchCurrencyByName(this.newCurrency.getName()) != null){

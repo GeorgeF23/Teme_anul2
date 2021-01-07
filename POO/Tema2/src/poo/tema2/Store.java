@@ -29,18 +29,35 @@ public class Store {
         return instance;
     }
 
+    /**
+     * Getter pentru moneda curenta
+     * @return
+     */
     public Currency getCurrentCurrency() {
         return currentCurrency;
     }
 
+    /**
+     * Setter pentru moneda curenta
+     * @param currentCurrency
+     */
     public void setCurrentCurrency(Currency currentCurrency) {
         this.currentCurrency = currentCurrency;
     }
 
+    /**
+     * Getter pentru lista de monede
+     * @return lista de monede
+     */
     public ArrayList<Currency> getCurrencies() {
         return currencies;
     }
 
+    /**
+     * Cauta o moneda in store
+     * @param name numele monedei pe care o cauta
+     * @return moneda daca exista / null daca nu exista
+     */
     public Currency searchCurrencyByName(String name){
         for(Currency c : this.currencies){
             if(c.getName().equals(name)){

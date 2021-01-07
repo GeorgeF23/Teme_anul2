@@ -4,6 +4,10 @@ import poo.tema2.Currency;
 import poo.tema2.Exceptions.CurrencyNotFoundException;
 import poo.tema2.Store;
 
+
+/**
+ * Clasa care implementeaza comanda de setare a monedei curente din store
+ */
 public class SetStoreCurrency implements ICommand {
     private Store store;
     private String newCurrencyName;
