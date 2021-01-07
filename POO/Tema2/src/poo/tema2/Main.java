@@ -45,6 +45,9 @@ public class Main {
                     } catch(CurrencyNotFoundException e){
                         System.err.println(e.getMessage());
                     }
+                case "listmanufacturers":
+                    commandManager.executeCommand(new ListManufacturers(store));
+                    break;
             }
         } while (!(command[0].equals("exit") || command[0].equals("quit")));
     }

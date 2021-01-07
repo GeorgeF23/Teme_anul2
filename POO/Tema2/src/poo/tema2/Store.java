@@ -70,4 +70,8 @@ public class Store {
         }
         return null;
     }
+
+    public ArrayList<Manufacturer> getManufacturers() {
+        return manufacturers;
+    }
 }
