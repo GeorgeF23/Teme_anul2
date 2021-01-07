@@ -14,7 +14,8 @@ public class Store {
     private static Store instance;
 
     private String name;
-    private Currency currency;
+    private Currency currentCurrency;
+    private ArrayList<Currency> currencies;
     private ArrayList<Product> products;
     private ArrayList<Manufacturer> manufacturers;
 
