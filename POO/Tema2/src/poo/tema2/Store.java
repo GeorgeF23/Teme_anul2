@@ -33,6 +33,10 @@ public class Store {
         return currentCurrency;
     }
 
+    public void setCurrentCurrency(Currency currentCurrency) {
+        this.currentCurrency = currentCurrency;
+    }
+
     public ArrayList<Currency> getCurrencies() {
         return currencies;
     }

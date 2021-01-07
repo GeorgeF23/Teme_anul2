@@ -1,6 +1,7 @@
 package poo.tema2;
 
 import poo.tema2.Commands.*;
+import poo.tema2.Exceptions.CurrencyNotFoundException;
 import poo.tema2.Exceptions.DuplicateCurrencyException;
 
 import java.io.IOException;
@@ -28,6 +29,13 @@ public class Main {
                     try{
                         commandManager.executeCommand(new AddCurrency(store, new Currency(command[1], command[2], Double.parseDouble(command[3]))));
                     } catch(DuplicateCurrencyException e){
+                        System.err.println(e.getMessage());
+                    }
+                    break;
+                case "setstorecurrency":
+                    try{
+                        commandManager.executeCommand(new SetStoreCurrency(store, command[1]));
+                    } catch(CurrencyNotFoundException e){
                         System.err.println(e.getMessage());
                     }
                     break;
