@@ -1,3 +1,5 @@
+package poo.tema2;
+
 public class Currency {
     private String name;
     private String symbol;

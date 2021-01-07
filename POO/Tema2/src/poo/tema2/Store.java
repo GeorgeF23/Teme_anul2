@@ -1,3 +1,5 @@
+package poo.tema2;
+
 import java.util.ArrayList;
 
 public class Store {
