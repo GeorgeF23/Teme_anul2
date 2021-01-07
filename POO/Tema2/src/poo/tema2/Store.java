@@ -9,13 +9,17 @@ public class Store {
     private static Store instance;
 
     private ArrayList<Currency> currencies;
+    private ArrayList<Manufacturer> manufacturers;
     private Currency currentCurrency;
 
     private Store(){
         this.currencies = new ArrayList<>();
+        this.manufacturers = new ArrayList<>();
 
-        this.currentCurrency = new Currency("EUR", "€", 1.0);
+        this.currentCurrency = new Currency("EUR", "€", 1.0); // Moneda default in store
         this.currencies.add(this.currentCurrency);
+
+        this.manufacturers.add(new Manufacturer("Not available")); // Producatorul care va fi asignat produselor din fisierul csv care nu au producator.
     }
 
 
