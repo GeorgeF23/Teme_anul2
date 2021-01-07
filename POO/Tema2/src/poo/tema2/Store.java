@@ -29,8 +29,20 @@ public class Store {
         return instance;
     }
 
+    public Currency getCurrentCurrency() {
+        return currentCurrency;
+    }
 
     public ArrayList<Currency> getCurrencies() {
         return currencies;
+    }
+
+    public Currency searchCurrencyByName(String name){
+        for(Currency c : this.currencies){
+            if(c.getName().equals(name)){
+                return c;
+            }
+        }
+        return null;
     }
 }
