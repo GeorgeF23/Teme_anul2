@@ -39,6 +39,12 @@ public class Main {
                         System.err.println(e.getMessage());
                     }
                     break;
+                case "updateparity":
+                    try{
+                        commandManager.executeCommand(new UpdateParity(store, command[1], Double.parseDouble(command[2])));
+                    } catch(CurrencyNotFoundException e){
+                        System.err.println(e.getMessage());
+                    }
             }
         } while (!command[0].equals("exit"));
     }
