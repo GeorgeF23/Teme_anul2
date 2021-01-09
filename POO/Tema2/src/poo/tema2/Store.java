@@ -49,10 +49,13 @@ public class Store {
 
     /**
      * Setter pentru moneda curenta
-     * @param currentCurrency
+     * @param desiredCurrency
      */
-    public void setCurrentCurrency(Currency currentCurrency) {
-        this.currentCurrency = currentCurrency;
+    public void setCurrentCurrency(Currency desiredCurrency) {
+        for(Product product : this.products){
+            product.setPrice(Store.convertCurrency(product.getPrice(), this.currentCurrency, desiredCurrency));
+        }
+        this.currentCurrency = desiredCurrency;
     }
 
     /**
