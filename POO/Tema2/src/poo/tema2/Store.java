@@ -190,4 +190,19 @@ public class Store {
     public static double convertCurrency(double price, Currency initialCurrency, Currency desiredCurrency){
         return price * initialCurrency.getParityToEur() / desiredCurrency.getParityToEur();
     }
+
+    /**
+     * Cauta un discount in lista de discount-uri
+     * @param type tipul discount-ului cautat
+     * @param value valoarea discount-ului cautat
+     * @return discount-ul gasit
+     */
+    public Discount searchDiscountByTypeAndValue(DiscountType type, double value){
+        for(Discount discount : this.discounts){
+            if(discount.getType() == type && discount.getValue() == value){
+                return discount;
+            }
+        }
+        return null;
+    }
 }

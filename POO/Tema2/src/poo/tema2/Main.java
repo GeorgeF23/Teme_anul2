@@ -81,6 +81,9 @@ public class Main {
                 case "adddiscount":
                     commandManager.executeCommand(new AddDiscount(store, command[1], command[2], Arrays.copyOfRange(command, 3, Array.getLength(command))));
                     break;
+                case "applydiscount":
+                    commandManager.executeCommand(new ApplyDiscount(store, command[1], command[2]));
+                    break;
                 default:
                     System.out.println("Comanda invalida");
                     break;
