@@ -49,7 +49,16 @@ public class Main {
                 case "loadcsv":
                     try{
                         commandManager.executeCommand(new LoadCSV(store, command[1]));
+                        System.out.println("Am gasit " + store.getProducts().size());
                     } catch (RuntimeException e){
+                        System.err.println(e.getMessage());
+                        e.printStackTrace();
+                    }
+                    break;
+                case "savecsv":
+                    try{
+                        commandManager.executeCommand(new SaveCSV(store, command[1]));
+                    } catch(RuntimeException e){
                         System.err.println(e.getMessage());
                         e.printStackTrace();
                     }
