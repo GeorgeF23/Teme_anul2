@@ -56,6 +56,16 @@ public class Product {
         this.discount = discount;
     }
 
+    public double getPriceWithDiscount(){
+        if(this.discount != null){
+            return switch (this.discount.getType()) {
+                case PERCENTAGE -> this.price * (1 - this.discount.getValue() / 100);
+                case FIXED -> this.price - this.discount.getValue();
+            };
+        }
+        return this.price;
+    }
+
     @Override
     public String toString() {
         return "";

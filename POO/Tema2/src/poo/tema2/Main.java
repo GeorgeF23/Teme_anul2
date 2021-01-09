@@ -2,6 +2,7 @@ package poo.tema2;
 
 import poo.tema2.Commands.*;
 import poo.tema2.Exceptions.CurrencyNotFoundException;
+import poo.tema2.Exceptions.DiscountNotFoundException;
 import poo.tema2.Exceptions.DuplicateCurrencyException;
 
 import java.lang.reflect.Array;
@@ -82,10 +83,14 @@ public class Main {
                     commandManager.executeCommand(new AddDiscount(store, command[1], command[2], Arrays.copyOfRange(command, 3, Array.getLength(command))));
                     break;
                 case "applydiscount":
-                    commandManager.executeCommand(new ApplyDiscount(store, command[1], command[2]));
+                    try{
+                        commandManager.executeCommand(new ApplyDiscount(store, command[1], command[2]));
+                    } catch(DiscountNotFoundException e){
+                        System.out.println(e.getMessage());
+                    }
                     break;
-                default:
-                    System.out.println("Comanda invalida");
+                case "calculatetotal":
+                    commandManager.executeCommand(new CalculateTotal(store, Arrays.copyOfRange(command, 1, Array.getLength(command))));
                     break;
             }
         } while (!(command[0].equals("exit") || command[0].equals("quit")));
