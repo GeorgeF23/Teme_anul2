@@ -50,6 +50,7 @@ public class Main {
                 case "loadcsv":
                     try{
                         commandManager.executeCommand(new LoadCSV(store, command[1]));
+                        System.out.println("Am incarcat " + store.getProducts().size() + " produse.");
                     } catch (RuntimeException e){
                         System.err.println(e.getMessage());
                         e.printStackTrace();
