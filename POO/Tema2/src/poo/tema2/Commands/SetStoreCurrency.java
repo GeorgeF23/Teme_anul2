@@ -9,8 +9,8 @@ import poo.tema2.Store;
  * Clasa care implementeaza comanda de setare a monedei curente din store
  */
 public class SetStoreCurrency implements ICommand {
-    private Store store;
-    private String newCurrencyName;
+    private final Store store;
+    private final String newCurrencyName;
 
     public SetStoreCurrency(Store store, String newCurrency) {
         this.store = store;

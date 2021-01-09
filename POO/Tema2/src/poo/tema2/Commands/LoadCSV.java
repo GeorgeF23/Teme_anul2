@@ -23,8 +23,8 @@ public class LoadCSV implements ICommand {
     private static final int QUANTITY = 4;
 
 
-    private Store store;
-    private String filename;
+    private final Store store;
+    private final String filename;
 
     public LoadCSV(Store store, String filename) {
         this.store = store;
@@ -58,7 +58,6 @@ public class LoadCSV implements ICommand {
      *
      * @param name numele producatorului
      * @return producatorul gasit / creat
-     * @throws DuplicateManufacturerException
      */
     private Manufacturer searchOrCreateManufacturer(String name) {
         Manufacturer manufacturer = this.store.searchManufacturerByName(name);

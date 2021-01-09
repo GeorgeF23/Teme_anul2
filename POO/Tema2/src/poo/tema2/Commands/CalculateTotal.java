@@ -3,10 +3,14 @@ package poo.tema2.Commands;
 import poo.tema2.Product;
 import poo.tema2.Store;
 
+
+/**
+ * Clasa care implementeaza comanda de calcul al pretului produselor
+ */
 public class CalculateTotal implements ICommand{
 
-    private Store store;
-    private String[] productIds;
+    private final Store store;
+    private final String[] productIds;
 
     public CalculateTotal(Store store, String ...productIds) {
         this.store = store;

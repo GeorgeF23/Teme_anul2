@@ -2,10 +2,14 @@ package poo.tema2;
 
 import java.time.LocalDateTime;
 
+
+/**
+ * Clasa ce descrie un discount
+ */
 public class Discount {
-    private String name;
-    private DiscountType type;
-    private double value;
+    private final String name;
+    private final DiscountType type;
+    private final double value;
     private LocalDateTime lastDateApplied;
 
     public Discount(DiscountType type, double value, String name) {
@@ -24,10 +28,6 @@ public class Discount {
 
     public DiscountType getType() {
         return type;
-    }
-
-    public LocalDateTime getLastDateApplied() {
-        return lastDateApplied;
     }
 
     public void setLastDateApplied(LocalDateTime lastDateApplied) {

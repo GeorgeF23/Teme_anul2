@@ -10,8 +10,8 @@ import poo.tema2.Currency;
  */
 public class AddCurrency implements ICommand {
 
-    private Store store;
-    private Currency newCurrency;
+    private final Store store;
+    private final Currency newCurrency;
 
     public AddCurrency(Store store, Currency newCurrency){
         this.store = store;

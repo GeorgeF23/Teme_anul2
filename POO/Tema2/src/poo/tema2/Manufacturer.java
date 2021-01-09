@@ -1,10 +1,10 @@
 package poo.tema2;
 
 /**
- * Class that represents a Manufacturer
+ * Clasa ce descrie un producator
  */
 public class Manufacturer {
-    private String name;
+    private final String name;
     private int countProducts;
 
     public Manufacturer(String name){

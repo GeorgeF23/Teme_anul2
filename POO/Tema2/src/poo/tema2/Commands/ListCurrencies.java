@@ -9,7 +9,7 @@ import poo.tema2.Store;
  */
 public class ListCurrencies implements ICommand{
 
-    private Store store;
+    private final Store store;
 
     public ListCurrencies(Store store){
         this.store = store;

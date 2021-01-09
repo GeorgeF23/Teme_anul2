@@ -3,9 +3,12 @@ package poo.tema2.Commands;
 import poo.tema2.Discount;
 import poo.tema2.Store;
 
+/**
+ * Clasa care implementeaza comanda de afisare a discount-urilor din store
+ */
 public class ListDiscounts implements ICommand {
 
-    private Store store;
+    private final Store store;
 
     public ListDiscounts(Store store) {
         this.store = store;

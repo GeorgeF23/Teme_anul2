@@ -8,11 +8,15 @@ import poo.tema2.Store;
 
 import java.time.LocalDateTime;
 
+
+/**
+ * Clasa care implementeaza comanda care apica un discount tuturor produselor
+ */
 public class ApplyDiscount implements ICommand {
 
-    private Store store;
-    private DiscountType type;
-    private double value;
+    private final Store store;
+    private final DiscountType type;
+    private final double value;
 
     public ApplyDiscount(Store store, String type, String value) {
         this.store = store;

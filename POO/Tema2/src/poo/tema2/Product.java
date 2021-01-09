@@ -1,5 +1,9 @@
 package poo.tema2;
 
+
+/**
+ * Clasa ce descrie un produs
+ */
 public class Product {
     private String uniqueId;
     private String name;
@@ -56,6 +60,10 @@ public class Product {
         this.discount = discount;
     }
 
+    /**
+     * Calculeaza pretul produsului tinand cont de discount
+     * @return pretul produsului
+     */
     public double getPriceWithDiscount(){
         if(this.discount != null){
             return switch (this.discount.getType()) {

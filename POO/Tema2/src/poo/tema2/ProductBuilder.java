@@ -1,5 +1,9 @@
 package poo.tema2;
 
+
+/**
+ * Clasa builder pentru Product
+ */
 public class ProductBuilder {
     private Product product;
 

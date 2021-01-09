@@ -4,10 +4,14 @@ import poo.tema2.Discount;
 import poo.tema2.DiscountType;
 import poo.tema2.Store;
 
+
+/**
+ * Clasa care implementeaza comanda de adaugare a unui discount nou
+ */
 public class AddDiscount implements ICommand {
 
-    private Store store;
-    private Discount discount;
+    private final Store store;
+    private final Discount discount;
 
     public AddDiscount(Store store, String type, String value, String[] nameSplitted) {
         this.store = store;

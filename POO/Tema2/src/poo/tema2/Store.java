@@ -7,7 +7,7 @@ import poo.tema2.Exceptions.NegativePriceException;
 import java.util.ArrayList;
 
 /**
- * The class that holds the information for the store.
+ * Clasa ce descrie un magazin
  */
 public class Store {
     private static Store instance;
@@ -32,7 +32,7 @@ public class Store {
 
 
     /**
-     * Method that returns the instance of the store
+     * Metoda ce returneaza instanta store-ului
      */
     public static Store getInstance(){
         if(instance == null){

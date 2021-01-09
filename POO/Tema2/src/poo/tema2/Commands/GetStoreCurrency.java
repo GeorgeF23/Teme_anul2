@@ -6,7 +6,7 @@ import poo.tema2.Store;
  * Clasa care implementeaza comanda de afisare a monedei curente din store
  */
 public class GetStoreCurrency implements ICommand {
-    private Store store;
+    private final Store store;
 
     public GetStoreCurrency(Store store) {
         this.store = store;

@@ -3,10 +3,14 @@ package poo.tema2.Commands;
 import poo.tema2.Product;
 import poo.tema2.Store;
 
+
+/**
+ * Clasa care implementeaza comanda de afisare a produselor ce apartin unui producator
+ */
 public class ListProductsByManufacturer implements ICommand {
 
-    private Store store;
-    private String manufacturerName;
+    private final Store store;
+    private final String manufacturerName;
 
     public ListProductsByManufacturer(Store store, String manufacturerName) {
         this.store = store;
