@@ -28,7 +28,7 @@ public class SaveCSV implements ICommand{
                     product.getName(),
                     product.getManufacturer().getName(),
                     this.store.getCurrentCurrency().getSymbol() + Double.toString(product.getPrice()),
-                    Integer.toString(product.getQuantity())
+                    Integer.toString(product.getQuantity()) + '\u00A0'  // Adaug nbsp
             });
         }
         return productsInfo;
