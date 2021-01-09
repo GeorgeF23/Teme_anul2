@@ -75,6 +75,9 @@ public class Main {
                 case "listproductsbymanufacturer":
                     commandManager.executeCommand(new ListProductsByManufacturer(store, command[1]));
                     break;
+                default:
+                    System.out.println("Comanda invalida");
+                    break;
             }
         } while (!(command[0].equals("exit") || command[0].equals("quit")));
     }
