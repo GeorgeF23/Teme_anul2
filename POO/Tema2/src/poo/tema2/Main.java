@@ -66,6 +66,9 @@ public class Main {
                 case "listproducts":
                     commandManager.executeCommand(new ListProducts(store));
                     break;
+                case "showproduct":
+                    commandManager.executeCommand(new ShowProduct(store, command[1]));
+                    break;
                 case "listmanufacturers":
                     commandManager.executeCommand(new ListManufacturers(store));
                     break;
