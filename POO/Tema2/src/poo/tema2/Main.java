@@ -5,6 +5,7 @@ import poo.tema2.Exceptions.CurrencyNotFoundException;
 import poo.tema2.Exceptions.DuplicateCurrencyException;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.Scanner;
 
 public class Main {
@@ -45,6 +46,18 @@ public class Main {
                     } catch(CurrencyNotFoundException e){
                         System.err.println(e.getMessage());
                     }
+                case "loadcsv":
+                    try{
+                        commandManager.executeCommand(new LoadCSV(store, command[1]));
+                    } catch (RuntimeException e){
+                        System.err.println(e.getMessage());
+                        e.printStackTrace();
+                    }
+                    break;
+
+                case "listproducts":
+                    commandManager.executeCommand(new ListProducts(store));
+                    break;
                 case "listmanufacturers":
                     commandManager.executeCommand(new ListManufacturers(store));
                     break;

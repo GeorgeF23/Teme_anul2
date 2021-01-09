@@ -1,5 +1,9 @@
 package poo.tema2;
 
+import poo.tema2.Exceptions.DuplicateManufacturerException;
+import poo.tema2.Exceptions.DuplicateProductException;
+import poo.tema2.Exceptions.NegativePriceException;
+
 import java.util.ArrayList;
 
 /**
@@ -10,11 +14,13 @@ public class Store {
 
     private ArrayList<Currency> currencies;
     private ArrayList<Manufacturer> manufacturers;
+    private ArrayList<Product> products;
     private Currency currentCurrency;
 
     private Store(){
         this.currencies = new ArrayList<>();
         this.manufacturers = new ArrayList<>();
+        this.products = new ArrayList<>();
 
         this.currentCurrency = new Currency("EUR", "€", 1.0); // Moneda default in store
         this.currencies.add(this.currentCurrency);
@@ -58,6 +64,14 @@ public class Store {
     }
 
     /**
+     * Getter pentru lista de produse
+     * @return lista de produse
+     */
+    public ArrayList<Product> getProducts() {
+        return products;
+    }
+
+    /**
      * Cauta o moneda in store
      * @param name numele monedei pe care o cauta
      * @return moneda daca exista / null daca nu exista
@@ -73,5 +87,94 @@ public class Store {
 
     public ArrayList<Manufacturer> getManufacturers() {
         return manufacturers;
+    }
+
+    /**
+     * Cauta un producator dupa nume. Daca nu are nume, atunci returneaza prodcatorul default.
+     * @param name numele produsului
+     * @return producatorul gasit
+     */
+    public Manufacturer searchManufacturerByName(String name){
+        if(name.equals("")){
+            return this.manufacturers.get(0);   // Returnez producatorul "Not available"
+        }
+        for(Manufacturer m : this.manufacturers){
+            if(m.getName().equals(name)){
+                return m;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Adauga un prodcator nou in lista de prodcatori. Totodata se verifica daca exista deja prodcatorul.
+     * @param manufacturer producatorul
+     */
+    public void addManufacturer(Manufacturer manufacturer) {
+        if(this.searchManufacturerByName(manufacturer.getName()) != null){
+            throw new DuplicateManufacturerException("Producatorul exista deja in store.");
+        }
+        this.manufacturers.add(manufacturer);
+    }
+
+
+    /**
+     * Adauga un produs nou in lista de produse.
+     * Totodata, se verifica daca pretul e pozitiv si produsul nu exista deja in lista.
+     * @param product produsul care trebuie adaugat
+     */
+    public void addProduct(Product product){
+        if(product == null){
+            return;
+        }
+        if(product.getPrice() < 0){
+            throw new NegativePriceException("Pretul unui produs nu poate fi negativ.");
+        }
+        if(searchProductByID(product.getUniqueId()) != null){
+            throw new DuplicateProductException("Produsul " + product.getUniqueId() + " exista deja in store");
+        }
+        product.getManufacturer().incrementCountProducts();
+
+        this.products.add(product);
+    }
+
+
+    /**
+     * Cauta un produs dupa id
+     * @param id id-ul produsului
+     * @return produsul gasit
+     */
+    public Product searchProductByID(String id){
+        for(Product product : this.products){
+            if(product.getUniqueId().equals(id)){
+                return product;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Cauta o moneda dupa simbolul ei
+     * @param symbol simbolul monedei
+     * @return moneda gasita
+     */
+    public Currency searchCurrencyBySymbol(String symbol){
+        for(Currency currency : this.currencies){
+            if(currency.getSymbol().equals(symbol)){
+                return currency;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Converteste de la o moneda la alta
+     * @param price valoarea care trebuie convertita
+     * @param initialCurrency moneda initiala
+     * @param desiredCurrency moneda dorita
+     * @return valoarea finala
+     */
+    public static double convertCurrency(double price, Currency initialCurrency, Currency desiredCurrency){
+        return price * initialCurrency.getParityToEur() / desiredCurrency.getParityToEur();
     }
 }
