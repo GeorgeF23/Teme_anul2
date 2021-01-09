@@ -72,6 +72,9 @@ public class Main {
                 case "listmanufacturers":
                     commandManager.executeCommand(new ListManufacturers(store));
                     break;
+                case "listproductsbymanufacturer":
+                    commandManager.executeCommand(new ListProductsByManufacturer(store, command[1]));
+                    break;
             }
         } while (!(command[0].equals("exit") || command[0].equals("quit")));
     }
