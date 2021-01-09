@@ -15,12 +15,14 @@ public class Store {
     private ArrayList<Currency> currencies;
     private ArrayList<Manufacturer> manufacturers;
     private ArrayList<Product> products;
+    private ArrayList<Discount> discounts;
     private Currency currentCurrency;
 
     private Store(){
         this.currencies = new ArrayList<>();
         this.manufacturers = new ArrayList<>();
         this.products = new ArrayList<>();
+        this.discounts = new ArrayList<>();
 
         this.currentCurrency = new Currency("EUR", "€", 1.0); // Moneda default in store
         this.currencies.add(this.currentCurrency);
@@ -72,6 +74,14 @@ public class Store {
      */
     public ArrayList<Product> getProducts() {
         return products;
+    }
+
+    /**
+     * Getter pentru lista de discount-uri
+     * @return lista de discount-uri
+     */
+    public ArrayList<Discount> getDiscounts() {
+        return discounts;
     }
 
     /**

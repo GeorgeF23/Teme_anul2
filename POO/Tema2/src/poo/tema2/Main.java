@@ -4,8 +4,8 @@ import poo.tema2.Commands.*;
 import poo.tema2.Exceptions.CurrencyNotFoundException;
 import poo.tema2.Exceptions.DuplicateCurrencyException;
 
-import java.io.IOException;
 import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
@@ -74,6 +74,12 @@ public class Main {
                     break;
                 case "listproductsbymanufacturer":
                     commandManager.executeCommand(new ListProductsByManufacturer(store, command[1]));
+                    break;
+                case "listdiscounts":
+                    commandManager.executeCommand(new ListDiscounts(store));
+                    break;
+                case "adddiscount":
+                    commandManager.executeCommand(new AddDiscount(store, command[1], command[2], Arrays.copyOfRange(command, 3, Array.getLength(command))));
                     break;
                 default:
                     System.out.println("Comanda invalida");
