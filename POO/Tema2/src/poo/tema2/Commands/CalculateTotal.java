@@ -22,7 +22,9 @@ public class CalculateTotal implements ICommand{
         double total = 0;
         for(String id : this.productIds){
             Product product = this.store.searchProductByID(id);
-            total += product.getPriceWithDiscount();
+            if(product != null){
+                total += product.getPriceWithDiscount();
+            }
         }
         System.out.println(this.store.getCurrentCurrency().getSymbol() + total);
     }
