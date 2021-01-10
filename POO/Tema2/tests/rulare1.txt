@@ -3,3 +3,8 @@ setstorecurrency GBP
 loadcsv amazon_co-ecommerce_sample.csv
 listmanufacturers
 listproducts
+showproduct eac7efa5dbd3d667f26eb3d3ab504464
+calculatetotal eac7efa5dbd3d667f26eb3d3ab504464
+setstorecurrency EUR
+calculatetotal eac7efa5dbd3d667f26eb3d3ab504464
+quit
