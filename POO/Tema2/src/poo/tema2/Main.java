@@ -47,6 +47,7 @@ public class Main {
                     } catch(CurrencyNotFoundException e){
                         System.err.println(e.getMessage());
                     }
+                    break;
                 case "loadcsv":
                     try{
                         commandManager.executeCommand(new LoadCSV(store, command[1]));
