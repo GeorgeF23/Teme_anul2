@@ -1,0 +1,50 @@
+addcurrency GBP £ 1.10
+setstorecurrency GBR
+setstorecurrency GBP
+loadcsv small_input.csv
+loadcsv small_input.csv
+listproducts
+listmanufacturers
+adddiscount PERCENTAGE 20 "-20% Craciun"
+applydiscount PERCENTAGE 30
+listdiscounts
+calculatetotal f74b562470571dfb689324adf236f82c
+applydiscount PERCENTAGE 20
+listdiscounts
+calculatetotal f74b562470571dfb689324adf236f82c
+setstorecurrency EUR
+calculatetotal f74b562470571dfb689324adf236f82c
+addcurrency GBP £ 2.0
+addcurrency RON Leu 0.2
+listcurrencies
+setstorecurrency RON
+listproducts
+updateparity RON 0.3
+setstorecurrency GBP
+listproductsbymanufacturer ccf
+loadcsv small_input2.csv
+listproducts
+adddiscount FIXED 5 "-5 pe toate produsele"
+calculatetotal 87bbb472ef9d90dcef140a551665c929
+applydiscount FIXED 5
+listdiscounts
+calculatetotal 87bbb472ef9d90dcef140a551665c929
+applydiscount PERCENTAGE 20
+calculatetotal 87bbb472ef9d90dcef140a551665c929
+calculatetotal test_id_invalid 87bbb472ef9d90dcef140a551665c929
+savecsv tests/output5.csv
+listdiscounts
+addcurrency USD $ 0.9
+setstorecurrency USD
+listcurrencies
+listproducts
+calculatetotal 87bbb472ef9d90dcef140a551665c929
+savecsv tests/output5_2.csv
+adddiscount FIXED 10 "-10$ pentru toate produsele"
+applydiscount FIXED 10
+listdiscounts
+calculatetotal 87bbb472ef9d90dcef140a551665c929
+updateparity USD 0.85
+listcurrencies
+addcurrency EUR € 1.2
+quit
