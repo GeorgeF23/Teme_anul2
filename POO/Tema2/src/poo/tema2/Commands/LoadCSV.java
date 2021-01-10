@@ -5,6 +5,7 @@ import com.opencsv.exceptions.CsvValidationException;
 import poo.tema2.*;
 import poo.tema2.Exceptions.CurrencyNotFoundException;
 import poo.tema2.Exceptions.DuplicateManufacturerException;
+import poo.tema2.Exceptions.DuplicateProductException;
 
 import javax.print.attribute.standard.MediaSize;
 import java.io.FileNotFoundException;
@@ -99,7 +100,11 @@ public class LoadCSV implements ICommand {
             String[] nextLine = reader.readNext(); // Sar peste prima linie
             while ((nextLine = reader.readNext()) != null) {
                 if(nextLine.length >= 4){
-                    this.store.addProduct(createProduct(nextLine));
+                    try{
+                        this.store.addProduct(createProduct(nextLine));
+                    } catch(DuplicateProductException e){
+                        System.err.println(e.getMessage());
+                    }
                 }
             }
         } catch (CsvValidationException | IOException e) {

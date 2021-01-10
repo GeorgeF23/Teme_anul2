@@ -53,7 +53,6 @@ public class Main {
                         commandManager.executeCommand(new LoadCSV(store, command[1]));
                     } catch (RuntimeException e){
                         System.err.println(e.getMessage());
-                        e.printStackTrace();
                     }
                     break;
                 case "savecsv":
