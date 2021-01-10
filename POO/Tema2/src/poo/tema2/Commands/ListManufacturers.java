@@ -17,7 +17,7 @@ public class ListManufacturers implements ICommand {
     @Override
     public void execute() {
         for(Manufacturer m : this.store.getManufacturers()){
-            System.out.println(m.getName() + " " + m.getCountProducts());
+            System.out.println(m.getName());
         }
     }
 }

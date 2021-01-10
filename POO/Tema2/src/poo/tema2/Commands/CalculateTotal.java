@@ -24,6 +24,6 @@ public class CalculateTotal implements ICommand{
             Product product = this.store.searchProductByID(id);
             total += product.getPriceWithDiscount();
         }
-        System.out.println(total);
+        System.out.println(this.store.getCurrentCurrency().getSymbol() + total);
     }
 }
