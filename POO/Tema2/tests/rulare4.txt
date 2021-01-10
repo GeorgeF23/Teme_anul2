@@ -1,0 +1,30 @@
+addcurrency GBP £ 1.10
+setstorecurrency GBP
+listcurrencies
+loadcsv small_input.csv
+listproducts
+listdiscounts
+adddiscount FIXED 2 "-2 pentru fiecare produs"
+listdiscounts
+applydiscount FIXED 2
+listdiscounts
+calculatetotal eac7efa5dbd3d667f26eb3d3ab504464
+loadcsv small_input2.csv
+listproducts
+listmanufacturers
+calculatetotal 26de90be8191b92ea208c2111c7090cd
+applydiscount FIXED 2
+listdiscounts
+calculatetotal 26de90be8191b92ea208c2111c7090cd
+updateparity GBP 3.0
+setstorecurrency EUR
+listproducts
+adddiscount PERCENTAGE 50 "-50% Black Friday"
+listdiscounts
+calculatetotal 4aaa27925929708a6b56fd7e46b35208 81b3ad5c07a31fa67e4dc8643afa3275
+applydiscount PERCENTAGE 50
+listdiscounts
+calculatetotal 4aaa27925929708a6b56fd7e46b35208 81b3ad5c07a31fa67e4dc8643afa3275
+savecsv tests/output4.csv
+listcurrencies
+quit
