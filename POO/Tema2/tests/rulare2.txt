@@ -1,0 +1,15 @@
+addcurrency GBP £ 1.10
+setstorecurrency GBP
+loadcsv small_input.csv
+listproducts
+listmanufacturers
+calculatetotal eac7efa5dbd3d667f26eb3d3ab504464 b17540ef7e86e461d37f3ae58b7b72ac
+adddiscount FIXED 3 "-3 la fiecare produs"
+applydiscount FIXED 3
+listdiscounts
+calculatetotal eac7efa5dbd3d667f26eb3d3ab504464 b17540ef7e86e461d37f3ae58b7b72ac
+setstorecurrency EUR
+calculatetotal eac7efa5dbd3d667f26eb3d3ab504464 b17540ef7e86e461d37f3ae58b7b72ac
+savecsv tests/output2.csv
+listproductsbymanufacturer Hornby
+quit
