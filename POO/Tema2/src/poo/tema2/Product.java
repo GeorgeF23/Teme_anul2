@@ -71,7 +71,7 @@ public class Product {
                 case FIXED -> this.price - this.discount.getValue();
             };
         }
-        return this.price;
+        return this.price > 0 ? this.price : 0;
     }
 
     @Override
