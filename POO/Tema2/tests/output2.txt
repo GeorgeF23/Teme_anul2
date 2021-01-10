@@ -1,4 +1,3 @@
-Am incarcat 9 produse.
 eac7efa5dbd3d667f26eb3d3ab504464,Hornby 2014 Catalogue,Hornby,£3.42,5
 b17540ef7e86e461d37f3ae58b7b72ac,FunkyBuys® Large Christmas Holiday Express Festive Train Set (SI-TY1017) Toy Light / Sounds / Battery Operated & Smoke,FunkyBuys,£16.99,0
 348f344247b0c1a935b1223072ef9d8a,CLASSIC TOY TRAIN SET TRACK CARRIAGES LIGHT ENGINE BOXED BOYS KIDS BATTERY,ccf,£9.99,2
@@ -14,7 +13,7 @@ FunkyBuys
 ccf
 Generic
 £20.409999999999997
-Discount: name='"-3 la fiecare produs"', type=FIXED, value=3.0, lastDateApplied=2021-01-10T12:49:53.112226628
+Discount: name='"-3 la fiecare produs"', type=FIXED, value=3.0, lastDateApplied=2021-01-10T14:05:13.750783482
 £14.409999999999998
 €16.451
 eac7efa5dbd3d667f26eb3d3ab504464,Hornby 2014 Catalogue,Hornby,€3.762,5

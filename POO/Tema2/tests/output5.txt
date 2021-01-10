@@ -25,7 +25,7 @@ Generic
 Discount-ul nu a fost gasit
 Discount: name='"-20% Craciun"', type=PERCENTAGE, value=20.0, lastDateApplied=null
 £24.99
-Discount: name='"-20% Craciun"', type=PERCENTAGE, value=20.0, lastDateApplied=2021-01-10T14:04:24.800759288
+Discount: name='"-20% Craciun"', type=PERCENTAGE, value=20.0, lastDateApplied=2021-01-10T14:06:05.254391263
 £19.992
 €21.991200000000003
 Moneda exista deja in magazin!
@@ -58,13 +58,13 @@ f74b562470571dfb689324adf236f82c,Hornby 00 Gauge 230mm BR Bogie Passenger Brake 
 26de90be8191b92ea208c2111c7090cd,Bachmann Class A2 60534 'Irish Elegance' BR Lined Green Early Emblem,Bachmann,£149.92,0
 4eb5ea748ea030b14c3d1789f9578133,Plarail - S-29 Steam Locomotive Type C61-20 w/Head Light (Model Train),Takara Tomy,£12.87,3
 £83.91600000000001
-Discount: name='"-20% Craciun"', type=PERCENTAGE, value=20.0, lastDateApplied=2021-01-10T14:04:24.800759288
-Discount: name='"-5 pe toate produsele"', type=FIXED, value=5.0, lastDateApplied=2021-01-10T14:04:24.808968748
+Discount: name='"-20% Craciun"', type=PERCENTAGE, value=20.0, lastDateApplied=2021-01-10T14:06:05.254391263
+Discount: name='"-5 pe toate produsele"', type=FIXED, value=5.0, lastDateApplied=2021-01-10T14:06:05.267311872
 £99.89500000000001
 £83.91600000000001
 £83.91600000000001
-Discount: name='"-20% Craciun"', type=PERCENTAGE, value=20.0, lastDateApplied=2021-01-10T14:04:24.809566797
-Discount: name='"-5 pe toate produsele"', type=FIXED, value=5.0, lastDateApplied=2021-01-10T14:04:24.808968748
+Discount: name='"-20% Craciun"', type=PERCENTAGE, value=20.0, lastDateApplied=2021-01-10T14:06:05.267909705
+Discount: name='"-5 pe toate produsele"', type=FIXED, value=5.0, lastDateApplied=2021-01-10T14:06:05.267311872
 EUR 1.0
 GBP 1.1
 RON 0.3
@@ -85,12 +85,12 @@ f74b562470571dfb689324adf236f82c,Hornby 00 Gauge 230mm BR Bogie Passenger Brake 
 26de90be8191b92ea208c2111c7090cd,Bachmann Class A2 60534 'Irish Elegance' BR Lined Green Early Emblem,Bachmann,$183.23555555555555,0
 4eb5ea748ea030b14c3d1789f9578133,Plarail - S-29 Steam Locomotive Type C61-20 w/Head Light (Model Train),Takara Tomy,$15.73,3
 $102.56400000000002
-Moneda exista deja in magazin!
-Discount: name='"-20% Craciun"', type=PERCENTAGE, value=20.0, lastDateApplied=2021-01-10T14:04:24.809566797
-Discount: name='"-5 pe toate produsele"', type=FIXED, value=5.0, lastDateApplied=2021-01-10T14:04:24.808968748
-Discount: name='"-10$ pentru toate produsele"', type=FIXED, value=10.0, lastDateApplied=2021-01-10T14:04:24.818266685
+Discount: name='"-20% Craciun"', type=PERCENTAGE, value=20.0, lastDateApplied=2021-01-10T14:06:05.267909705
+Discount: name='"-5 pe toate produsele"', type=FIXED, value=5.0, lastDateApplied=2021-01-10T14:06:05.267311872
+Discount: name='"-10$ pentru toate produsele"', type=FIXED, value=10.0, lastDateApplied=2021-01-10T14:06:05.276329509
 $118.20500000000001
 EUR 1.0
 GBP 1.1
 RON 0.3
 USD 0.85
+Moneda exista deja in magazin!
