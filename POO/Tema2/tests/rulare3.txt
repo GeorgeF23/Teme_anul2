@@ -1,0 +1,20 @@
+addcurrency GBP £ 1.10
+listcurrencies
+loadcsv small_input.csv
+listproducts
+listmanufacturers
+listproductsbymanufacturer ccf
+updateparity GBP 2.0
+setstorecurrency GBP
+listcurrencies
+listproducts
+savecsv tests/output3.csv
+adddiscount PERCENTAGE 10 "-10% Black Friday"
+listdiscounts
+calculatetotal 348f344247b0c1a935b1223072ef9d8a
+applydiscount PERCENTAGE 10
+calculatetotal 348f344247b0c1a935b1223072ef9d8a
+setstorecurrency EUR
+calculatetotal 348f344247b0c1a935b1223072ef9d8a
+listproductsbymanufacturer FunkyBuys
+quit
