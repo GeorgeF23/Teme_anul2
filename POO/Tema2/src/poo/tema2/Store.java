@@ -18,6 +18,11 @@ public class Store {
     private ArrayList<Discount> discounts;
     private Currency currentCurrency;
 
+    /**
+     * Creeaza un nou magazin.
+     * Initializeaza listele de monede, producatori, produse si discount-uri.
+     * Adauga moneda initiala EUR si producatorul default "Not Available"
+     */
     private Store(){
         this.currencies = new ArrayList<>();
         this.manufacturers = new ArrayList<>();
