@@ -12,4 +12,5 @@ IOCLA
   -> HW3: Construct AST tree in assembly  
   
 POO  
-  -> Tema1: Harta  
+  -> HW1: GPS  
+  -> HW2: Store management
