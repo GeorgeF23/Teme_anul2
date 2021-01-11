@@ -20,7 +20,9 @@ public class ShowProduct implements ICommand{
     @Override
     public void execute() {
         Product product = this.store.searchProductByID(this.productId);
-        System.out.println(product.getUniqueId() + "," + product.getName() + "," + product.getManufacturer().getName() + ","
-                + this.store.getCurrentCurrency().getSymbol() + product.getPrice() + "," + product.getQuantity());
+        if(product != null){
+            System.out.println(product.getUniqueId() + "," + product.getName() + "," + product.getManufacturer().getName() + ","
+                    + this.store.getCurrentCurrency().getSymbol() + product.getPrice() + "," + product.getQuantity());
+        }
     }
 }
