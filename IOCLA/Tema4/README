@@ -1,0 +1,62 @@
+Nume: Floarea George-Marian
+Grupa: 324CB
+
+Cerinta 1
+    Am descoperit ca functia main apeleaza mai multe functii care citesc de la tastatura folosind "read"
+si stocheaza string-ul citit intr-un buffer.
+    Cea de-a doua functie este vulnerabila deoarece buffer-ul este prea mic.
+    Functia vulnerabila se afla la adresa 0x80492f8.
+    Functia aceasta este vulnerabila pentru ca, folosind functia "read", citeste de la tastatura
+maxim 387 de caractere, insa incearca sa le puna intr-un buffer de 297 de octeti.
+    Astfel, cu un payload construit bine se poate redirectiona executia codului printr-un exploit
+de tipul buffer overflow.
+
+
+Cerinta 2
+
+    Pentru a afla flag-ul am cautat o functie care face afisare pe ecran si am gasit functia print_flag
+la adresa 0x08049291.
+    Apoi am creat un payload care imi va umple primele 2 buffere cu caracterul "A", iar apoi face overflow pana
+la locatia in memorie unde este stocata adresa de return.
+    Peste adresa de return am scris adresa functiei print_flag care va afisa flagul: NICE_FLAG{01dd0707df39e70467d79cb6e1812252}
+
+Cerinta 3
+
+    Main-ul programului naughty apeleaza mai multe functii una dupa cealalta.
+    Primele 5 functii fac o citire de la tastatura intr-un buffer mai mic decat limita caracterelor ce pot fi citite de la tastatura.
+    Asadar, se poate face un buffer overflow cu ele, insa pe stiva sunt alocati mai multi octeti decat se pot citii de la tastatura, asa ca nu se poate rescrie adresa de return.
+    Totusi, in fiecare dintre functii se verifica valoarea unei variabile locale, iar daca nu se satisface conditia, programul se opreste cu "exit".
+    Deci printr-un buffer overflow trebuie sa rescriu valoarea variabilelor locale din fiecare functie pentru a permite continuarea programului.
+
+    - in prima functie variabila locala trebuie sa fie egala cu 0x a1 43 dd d3
+    - in a doua functie variabila locala trebuie sa fie egala cu 0x 90 ee 1a 98
+    - in a treia functie variabila locala trebuie sa fie egala cu 0x c7 c8 06 0e
+    - in a patra functie variabila locala trebuie sa fie egala cu 0x b2 21 fc ca
+    - in a cincea functie variabila locala trebuie sa fie egala cu 0x 2d f4 94 9d
+
+    In a 6-a functie apelata in main se face aceeasi citire si verificare a unei variabile locale, insa aici spatiul alocat pe stiva este mai mic decat numarul de caractere citite de la tastatura.
+    In plus, dupa verificarea variabilei locale se apeleaza o functie data la al doilea parametru, deci daca fac un overflow si rescriu al doilea parametru, pot redirectiona executia.
+
+    - valoarea variabilei locale trebuie sa fie egala cu 0x 50 81 2e b1
+    - al doilea parametru il voi rescrie cu adresa functiei print_flag, adica 0x 08 04 92 91
+
+    Flag: NAUGHTY_FLAG{0634108ebae03bef99bdfa80ac96ccab}
+
+Cerinta 4
+
+    Prima data am cautat un shellcode pe site-ul shell-storm.org care imi poate da un shell si l-am ales pe acesta: http://shell-storm.org/shellcode/files/shellcode-811.php
+    Apoi, am plecat de la payload-ul de la cerinta 3, insa nu am mai facut redirectarea catre functia print_flag, ci am facut-o catre o adresa de pe stiva (max exact, ebp - 100).
+    Payload-ul este modificat doar pentru input-ul de la functia a 6-a, celelalte functii au acelasi payload ca la cerinta 3.
+
+    Payload-ul pentru functia a 6-a arata asa:
+        - 127 de octeti random (eu am pus 0x41)
+        - 0xB1 0x2E 0x81 0x50 -> valoarea variabilei locale in little endian
+        - 128 de NOP-uri
+        - shellcode-ul
+        - 72 de NOP-uri
+        - 0x74 0xCF 0xFF 0xFF  -> ebp - 100
+
+    Se redirectioneaza executia programului pe stiva unde ajunge pe primul sir de NOP-uri, apoi la shellcode care imi obtine un shell.
+    
+    Programul se ruleaza din terminal cu comanda: (cat naughty_shellcode ; cat) | ./naughty
+    Primul cat imi afiseaza payload-ul, iar al doilea imi tine deschis input-ul pentru a putea interactiona cu shell-ul.

