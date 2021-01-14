@@ -10,6 +10,8 @@ IOCLA
   -> HW1: Make our own printf in C  
   -> HW2: String manipulation in assembly  
   -> HW3: Construct AST tree in assembly  
+  -> HW4: binary exploitation  
+  -> HW4-bonus: AVX vector optimization
   
 POO  
   -> HW1: GPS  
