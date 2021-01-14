@@ -1,0 +1,40 @@
+Nume: Floarea George-Marian
+Grupa: 324CB
+
+Implementarea in C:
+
+In functia suma_m256 am extras in vectorii low si high primele 4 elemente, respectiv ultimele 4 elemente, ale vectorului de 8 float-uri dat ca parametru.
+Apoi pentru fiecare am aplicat de 2 ori functia de horizontal add, obtinand astfel suma elementelor celor 2 vectori de 4 elemente.
+In final am adunat cei 2 vectori de 4 elemente, obtinand astfel suma elementelor vectorului initial.
+
+In functia f_vector_op_avx am calculat prima data produsul A * B astfel:
+    - copiez primele 8 elemente ale vectorilor A si B in vectori de tip __mm256
+    - inmultesc cei 2 vectori
+    - calculez suma vectorului rezultat din inmultire
+    - adaug suma obtinuta la o suma finala
+    - trec la urmatoarele 8 elemente si repet procesul pana cand am epuizat vectorii A si B
+
+Apoi am creat un vector de tip __m256 numit sum_vector care contine pe toate casutele suma finala, adica A * B, obtinand astfel vectorul A * B * I(8).
+
+In final, am calculat formula ceruta astfel:
+    - copiez primele 8 elemente ale vectorului C intr-un vector de tip __m256
+    - ii calculez radicalul fiecarui element folosind o functie AVX
+    - adun rezultatul la sum_vector si il salvez in D
+    - trec la urmatoarele 8 elemente ale vectorilor C si D si repet procesul pana am epuizat toate valorile
+
+
+Timpii de executie se invart in jurul valorilor: 0.079314s (non-AVX), 0.042382s (AVX), cu un raport de 1.87.
+
+
+Implementarea in assembly:
+
+In primul rand am creat un vector de 8 intregi pe 32 de biti in ymm2 plin cu valori de 2.
+Apoi, intr-o bucla am executat urmatoarele operatii:
+    - incarc primele 8 elemente din A si B in ymm0, respectiv ymm1
+    - calculez A .^ 2 si 2 * B prin operatii de inmultire (la operatia 2 * B ma folosesc de ymm2)
+    - insumez cele 2 rezultate si le stochez in C
+    - trec la urmatoarele 8 elemente din A si B si repet procesul pana epuizez toate valorile
+
+
+Timpii de executie se invart in jurul valorii de: 0.068175s (non-AVX), 0.027719s (AVX), cu un raport de 2.45.
+
