@@ -15,4 +15,5 @@ IOCLA
   
 POO  
   -> HW1: GPS  
-  -> HW2: Store management
+  -> HW2: Store management  
+  -> Project: Auction house
