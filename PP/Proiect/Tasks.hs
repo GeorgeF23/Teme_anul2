@@ -8,6 +8,7 @@
 module Tasks where
 
 import Dataset
+import MyUtils
 
 type CSV = String
 type Value = String
@@ -20,7 +21,12 @@ type Table = [Row]
 
 -- Task 1
 compute_exam_grades :: Table -> Table
-compute_exam_grades = undefined
+compute_exam_grades = (["Nume","Punctaj Exam"] :) . map (\line -> head line : [show $ compute_one_exam_grade $ tail line]) . tail 
+
+
+-- Primeste lista de note si returneaza nota finala din examen
+compute_one_exam_grade :: Row -> Float
+compute_one_exam_grade = foldr (\el acc -> if acc == (-1) then string_to_float el else string_to_float el / 4 + acc) (-1)
 
 -- Task 2
 -- Number of students who have passed the exam:
