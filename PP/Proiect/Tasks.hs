@@ -30,6 +30,7 @@ compute_exam_grades = (["Nume","Punctaj Exam"] :) . map (\line -> head line : [f
 compute_one_exam_grade :: Row -> Float
 compute_one_exam_grade exam_grade = compute_one_interview_exam_grade exam_grade + string_to_float (last exam_grade)
 
+-- Primeste lista de note si returneaza nota examenului interviu
 compute_one_interview_exam_grade :: Row -> Float
 compute_one_interview_exam_grade = (/ 4) . sum . map string_to_float . take 6
 
