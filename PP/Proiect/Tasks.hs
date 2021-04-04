@@ -60,7 +60,7 @@ get_avg_responses_per_qs :: Table -> Table
 get_avg_responses_per_qs grades = ["Q1","Q2","Q3","Q4","Q5","Q6"] : [map (float_to_string . (/ (fromIntegral $ length $ tail grades))) (foldl (zipWith (+)) [0.0, 0.0, 0.0, 0.0, 0.0, 0.0] $ map( map string_to_float . take 6 . tail) $ tail grades)]
 
 -- Task 4
--- get_exam_summary :: Table -> Table
+get_exam_summary :: Table -> Table
 get_exam_summary = construct_table . foldl (zipWith increment_question_numbers) [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]] . map( map string_to_integer . take 6 . tail) . tail
     where
         increment_question_numbers :: [Integer] -> Integer -> [Integer]
@@ -74,7 +74,7 @@ get_exam_summary = construct_table . foldl (zipWith increment_question_numbers) 
 
 
 -- Task 5
--- get_ranking :: Table -> Table
+get_ranking :: Table -> Table
 get_ranking = (["Nume","Punctaj Exam"] :) . sortBy cmp . tail . compute_exam_grades
     where
         cmp :: Row -> Row -> Ordering
