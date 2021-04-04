@@ -7,6 +7,8 @@
 
 module Tasks where
 
+import Data.List
+
 import Dataset
 import MyUtils
 
@@ -21,12 +23,15 @@ type Table = [Row]
 
 -- Task 1
 compute_exam_grades :: Table -> Table
-compute_exam_grades = (["Nume","Punctaj Exam"] :) . map (\line -> head line : [show $ compute_one_exam_grade $ tail line]) . tail
+compute_exam_grades = (["Nume","Punctaj Exam"] :) . map (\line -> head line : [float_to_string $ compute_one_exam_grade $ tail line]) . tail
 
 
 -- Primeste lista de note si returneaza nota finala din examen
 compute_one_exam_grade :: Row -> Float
-compute_one_exam_grade = foldr (\el acc -> if acc == (-1) then string_to_float el else string_to_float el / 4 + acc) (-1)
+compute_one_exam_grade exam_grade = compute_one_interview_exam_grade exam_grade + string_to_float (last exam_grade)
+
+compute_one_interview_exam_grade :: Row -> Float
+compute_one_interview_exam_grade = (/ 4) . sum . map string_to_float . take 6
 
 -- Task 2
 -- Number of students who have passed the exam:
@@ -51,7 +56,7 @@ get_passed_hw_num = length . filter (>= 1.5) . map (sum . map string_to_float . 
 
 -- Task 3
 get_avg_responses_per_qs :: Table -> Table
-get_avg_responses_per_qs grades = ["Q1","Q2","Q3","Q4","Q5","Q6"] : [map (show . (/ (fromIntegral $ length $ tail grades))) (foldl (zipWith (+)) [0.0, 0.0, 0.0, 0.0, 0.0, 0.0] $ map( map string_to_float . take 6 . tail) $ tail grades)]
+get_avg_responses_per_qs grades = ["Q1","Q2","Q3","Q4","Q5","Q6"] : [map (float_to_string . (/ (fromIntegral $ length $ tail grades))) (foldl (zipWith (+)) [0.0, 0.0, 0.0, 0.0, 0.0, 0.0] $ map( map string_to_float . take 6 . tail) $ tail grades)]
 
 -- Task 4
 -- get_exam_summary :: Table -> Table
@@ -68,9 +73,21 @@ get_exam_summary = construct_table . foldl (zipWith increment_question_numbers) 
 
 
 -- Task 5
-get_ranking :: Table -> Table
-get_ranking = undefined
+-- get_ranking :: Table -> Table
+get_ranking = (["Nume","Punctaj Exam"] :) . sortBy cmp . tail . compute_exam_grades
+    where
+        cmp :: Row -> Row -> Ordering
+        cmp entry1 entry2
+            | entry1 !! 1 < entry2 !! 1 = LT
+            | entry1 !! 1 == entry2 !! 1 = if head entry1 < head entry2 then LT else GT
+            | otherwise = GT
 
 -- Task 6
 get_exam_diff_table :: Table -> Table
-get_exam_diff_table = undefined
+get_exam_diff_table = (["Nume","Punctaj interviu","Punctaj scris","Diferenta"] :) . sortBy cmp . map ((\line -> line ++ [float_to_string $ abs (string_to_float (line !! 1) - string_to_float (line !! 2))]) . (\line -> head line : float_to_string (compute_one_interview_exam_grade $ tail line) : [float_to_string $ string_to_float (line !! 7)])) . tail
+    where
+        cmp :: Row -> Row -> Ordering
+        cmp entry1 entry2
+            | entry1 !! 3 < entry2 !! 3 = LT
+            | entry1 !! 3 == entry2 !! 3 = if head entry1 < head entry2 then LT else GT
+            | otherwise = GT
