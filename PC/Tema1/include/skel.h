@@ -118,6 +118,21 @@ void init(int argc, char *argv[]);
  */
 void send_icmp(uint32_t daddr, uint32_t saddr, uint8_t *sha, uint8_t *dha, u_int8_t type, u_int8_t code, int interface, int id, int seq);
 
+
+/**
+ * @brief 
+ * 
+ * @param daddr destination IP
+ * @param saddr source IP
+ * @param sha source MAC
+ * @param dha destination MAC
+ * @param type Type
+ * @param code Code
+ * @param interface interface 
+ */
+void send_icmp_error(uint32_t daddr, uint32_t saddr, uint8_t *sha, uint8_t *dha, u_int8_t type, u_int8_t code, int interface);
+
+
 /**
  * @brief 
  * 
