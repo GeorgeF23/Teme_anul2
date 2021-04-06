@@ -102,11 +102,6 @@ void get_interface_mac(int interface, uint8_t *mac);
  */
 void init(int argc, char *argv[]);
 
-/**
- * @brief 
- * 
- */
-void parse_arp_table();
 
 /**
  * @brief 

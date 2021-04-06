@@ -8,9 +8,10 @@ int main(int argc, char *argv[])
 	int rc;
 
 	struct route_table_entry *rtable = malloc(sizeof (struct route_table_entry) * MAX_RTABLE_ENTRIES);
-	int rtable_size = read_rtable(argv[1], rtable);
+	struct arp_entry *arptable = malloc(sizeof (struct arp_entry) * MAX_ARPTABLE_ENTRIES);
 
-	printf("%d\n", rtable[5].interface);
+	int rtable_size = read_rtable(argv[1], rtable);
+	int arptable_size = parse_arp_table(arptable);
 
 	init(argc - 2, argv + 2);
 
