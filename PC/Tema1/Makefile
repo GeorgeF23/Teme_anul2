@@ -28,7 +28,7 @@ distclean: clean
 
 clean:
 	rm -f $(OBJECTS)
-	rm router
+	rm -f router
 
 run0:
 	./router rtable0.txt rr-0-1 r-0 r-1
