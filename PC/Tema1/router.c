@@ -48,7 +48,6 @@ int main(int argc, char *argv[])
 		struct ether_header *eth_hdr = (struct ether_header *)m.payload;
 		struct iphdr *ip_hdr = (struct iphdr *)(m.payload + sizeof(struct ether_header));
 
-		printf("Primit pachet de la %02x la %02x\n", eth_hdr->ether_shost[5], eth_hdr->ether_dhost[5]);
 		// Get the best route for the packet
 		struct route_table_entry *best_route = calculate_best_route(ip_hdr->daddr, rtable, rtable_size);
 		DIE(best_route == NULL, "no route found");
@@ -58,7 +57,6 @@ int main(int argc, char *argv[])
 		get_interface_mac(best_route->interface, eth_hdr->ether_shost);
 
 		// Forward the packet
-		printf("Dau pachetul pe interfata %d\n", best_route->interface);
 		send_packet(best_route->interface, &m);
 	}
 }

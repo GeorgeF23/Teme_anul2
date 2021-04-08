@@ -36,3 +36,11 @@ run0:
 run1:
 	./router rtable1.txt rr-0-1 r-0 r-1
 
+clean_checker:
+	rm -rf hosts_output
+	rm -f router_0_*
+	rm -f router_1_*
+	rm -f router0
+	rm -f router1
+	rm -f rtable.txt
+
