@@ -16,10 +16,10 @@ int main(int argc, char *argv[])
 	packet m;
 	int rc;
 
-	struct Node *rtable = create_node(NULL);
+	struct Node *rtable = create_node(NULL);	// Initialize an empty tree for the routing table
 	struct arp_entry *arptable = malloc(sizeof (struct arp_entry) * MAX_ARPTABLE_ENTRIES);
 
-	int rtable_size = read_rtable(argv[1], rtable);
+	int rtable_size = read_rtable(argv[1], rtable);	// Read the routing table file
 	DIE(rtable_size == 0, "No routes found");
 
 	int arptable_size = parse_arp_table(arptable);
