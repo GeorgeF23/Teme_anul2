@@ -54,12 +54,12 @@ int main(int argc, char *argv[])
 
 		if(eth_hdr->ether_type == htons(ETHERTYPE_IP)) { // Check if the packet is an IP packet
 
-			if(ip_hdr->ttl == 1){
+			if(ip_hdr->ttl == 1){	// If ttl is 1, then send back ICMP time exceeded error
 				send_icmp_error(ip_hdr->saddr, inet_addr(get_interface_ip(m.interface)), eth_hdr->ether_dhost, eth_hdr->ether_shost, ICMP_TIME_EXCEEDED, 0, m.interface);
 				continue;
 			}
 
-			if(ip_hdr->protocol == 1) {	// ICMP packet
+			if(ip_hdr->protocol == 1) {	// If packet is ICMP
 				struct icmphdr *icmp_hdr = parse_icmp(&m.payload);
 				if(icmp_hdr->type == ICMP_ECHO){	// Check if the packet is ICMP Echo request
 					int interface = is_router_ip(ip_hdr->daddr);
@@ -72,7 +72,10 @@ int main(int argc, char *argv[])
 
 			// Get the best route for the packet
 			struct route_table_entry *best_route = calculate_best_route(rtable, ip_hdr->daddr);
-			DIE(best_route == NULL, "no route found");
+			if(best_route == NULL) {	// If a route does not exist, send back error
+				send_icmp_error(ip_hdr->saddr, inet_addr(get_interface_ip(m.interface)), eth_hdr->ether_dhost, eth_hdr->ether_shost, ICMP_DEST_UNREACH, ICMP_NET_UNREACH, m.interface);
+				continue;
+			}
 			
 			// Update the eth_hdr to go through the best route
 			memcpy(eth_hdr->ether_dhost, get_arp_entry(best_route->next_hop, arptable, arptable_size)->mac, ETH_ALEN);
