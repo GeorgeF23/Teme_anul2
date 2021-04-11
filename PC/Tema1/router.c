@@ -52,6 +52,21 @@ int main(int argc, char *argv[])
 		struct ether_header *eth_hdr = (struct ether_header *)m.payload;
 		struct iphdr *ip_hdr = (struct iphdr *)(m.payload + sizeof(struct ether_header));
 
+		struct arp_header* arp_hdr = parse_arp(&m.payload);
+
+		if(arp_hdr != NULL) {	// Check if the packet is an ARP packet
+			if(arp_hdr->op == htons(ARPOP_REQUEST)) {	// Check if is an ARP request
+				int interface = is_router_ip(arp_hdr->tpa);
+				if(interface != -1){	// Check if is router ip
+					memcpy(eth_hdr->ether_dhost, arp_hdr->sha, ETH_ALEN);
+					get_interface_mac(interface, eth_hdr->ether_shost);
+					send_arp(arp_hdr->spa, arp_hdr->tpa, eth_hdr, interface, htons(ARPOP_REPLY));
+				}
+			}
+			
+			continue;
+		}
+
 		if(eth_hdr->ether_type == htons(ETHERTYPE_IP)) { // Check if the packet is an IP packet
 
 			if(ip_hdr->ttl == 1){	// If ttl is 1, then send back ICMP time exceeded error
