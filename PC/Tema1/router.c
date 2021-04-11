@@ -3,7 +3,9 @@
 #include "parser.h"
 #include "arp.h"
 
-
+/**
+ * @brief  Stores the information necessary for the queued packets to be sent
+ */
 struct packet_queue_element {
 	packet m;
 	uint32_t next_hop_ip;
@@ -26,22 +28,32 @@ int is_router_ip(uint32_t ip){
 	return -1;
 }
 
+/**
+ * @brief  Handles queued packets when an ARP reply is received
+ * @note   
+ * @param  packet_queue: the queue where the packets are stored
+ * @param  next_hop_ip: the ip of the received arp entry
+ * @param  *next_hop_mac: the mac of the received arp entry
+ * @retval None
+ */
 void handle_queued_packets(queue packet_queue, uint32_t next_hop_ip, uint8_t *next_hop_mac){
 	queue aux = queue_create();
 
 	while(!queue_empty(packet_queue)){
-		struct packet_queue_element *el = queue_deq(packet_queue);
-		if(el->next_hop_ip == next_hop_ip){
+		struct packet_queue_element *el = queue_deq(packet_queue);	// Extract packet from queue
+
+		if(el->next_hop_ip == next_hop_ip){	// Check if his destination is the one that was just received in the ARP reply
 			packet m = el->m;
 			struct ether_header *eth_hdr = (struct ether_header *)m.payload;
-			memcpy(eth_hdr->ether_dhost, next_hop_mac, ETH_ALEN);
+			memcpy(eth_hdr->ether_dhost, next_hop_mac, ETH_ALEN);	// Place the destination MAC
 
-			send_packet(el->send_interface, &m);
-		} else {
+			send_packet(el->send_interface, &m);	// Send the packet
+		} else {	// Packets whose destination is not the one that was received in the ARP reply are put in an auxiliary queue
 			queue_enq(aux, el);
 		}
 	}
 
+	// The remaining packets are placed back in the queue
 	while(!queue_empty(aux)){
 		struct packet_queue_element *el = queue_deq(aux);
 		queue_enq(packet_queue, el);
@@ -141,12 +153,17 @@ int main(int argc, char *argv[])
 			uint8_t *next_hop_mac = get_arp_entry(arp_table, best_route->next_hop);
 
 			if(next_hop_mac == NULL){ // Next hop is not in the arp table
+
+				// Prepare an ARP request
 				struct ether_header *arp_eth_hdr = malloc(sizeof(struct ether_header));
 				get_interface_mac(best_route->interface, arp_eth_hdr->ether_shost);
 				memset(arp_eth_hdr->ether_dhost, 0xFF, ETH_ALEN);
 				arp_eth_hdr->ether_type = htons(ETHERTYPE_ARP);
+
+				// Send the ARP request
 				send_arp(best_route->next_hop, inet_addr(get_interface_ip(best_route->interface)), arp_eth_hdr, best_route->interface, htons(ARPOP_REQUEST));
 
+				// Place the packet and aditional information in the queue
 				struct packet_queue_element *queue_el = malloc(sizeof(struct packet_queue_element));
 				queue_el->m = m;
 				queue_el->next_hop_ip = best_route->next_hop;
@@ -155,7 +172,8 @@ int main(int argc, char *argv[])
 				queue_enq(packet_queue, queue_el);
 				continue;
 			}
-			memcpy(eth_hdr->ether_dhost, next_hop_mac, ETH_ALEN);
+
+			memcpy(eth_hdr->ether_dhost, next_hop_mac, ETH_ALEN); // If MAC is already known, put it in the header
 
 
 			// Forward the packet

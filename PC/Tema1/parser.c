@@ -11,6 +11,7 @@ int read_rtable(char *source_file, struct Node *rtable){
 
     while(fgets(buffer, MAX_RENTRY_SIZE, fd) != NULL)
     {
+        // Split the string
         char *prefix = strtok(buffer, " \n");
         char *next_hop = strtok(NULL, " \n");
         char *mask = strtok(NULL, " \n"); 
@@ -19,14 +20,15 @@ int read_rtable(char *source_file, struct Node *rtable){
         struct route_table_entry *entry = malloc(sizeof(struct route_table_entry));
         DIE(entry == NULL, "read_rtable: malloc");
 
+        // Put the information in the struct
         entry->prefix = inet_addr(prefix);
         entry->next_hop = inet_addr(next_hop);
         entry->mask = inet_addr(mask);
         entry->interface = atoi(interface);
 
-        insert(rtable, entry);
+        insert(rtable, entry);  // Put the entry into the tree
 
-        memset(buffer, 0, MAX_RENTRY_SIZE);
+        memset(buffer, 0, MAX_RENTRY_SIZE); // Reset the buffer for the next entry
         count++;
     }
     
@@ -62,51 +64,51 @@ int get_bit(__uint32_t value, int n){
 }
 
 void insert(struct Node *root, struct route_table_entry *value){
-    // int length = get_mask_length(value->mask);
     struct Node *p = root;
 
     int length = get_mask_length(value->mask);
     __uint32_t prefix = ntohl(value->prefix);
     
-    for(int i = 0; i < length; i++){
+    for(int i = 0; i < length; i++){    // Iterate through the bits of the prefix
         int bit = get_bit(prefix, i);
-        if(bit == 0){
-            if(p->left != NULL){
+        if(bit == 0){   // If the bit is 0 we search in the left subtree
+            if(p->left != NULL){    // If there is already a left child we keep on going
                 p = p->left;
-            } else {
+            } else {    // If there is no left child we make one
                 struct Node *temp = create_node(NULL);
                 p->left = temp;
                 p = temp;
             }
-        } else {
-            if(p->right != NULL){
+        } else {    // If the bit is 1 we search in the right subtree
+            if(p->right != NULL){   // If there is already a right child we keep on going
                 p = p->right;
-            } else {
+            } else {    // If there is no right child we make one
                 struct Node *temp = create_node(NULL);
                 p->right = temp;
                 p = temp;
             }
         }
     }
-    p->value = value;
+    p->value = value;   // When we went through all the bits we put the entry in the node
 }
 
 struct route_table_entry *calculate_best_route(struct Node *root, __uint32_t address){
     struct Node *p = root;
     address = ntohl(address);
     
-    for(int i = 0; ; i++){
+
+    for(int i = 0; ; i++){  // Iterate through the bits
         int bit = get_bit(address, i);
-        if(bit == 1){
+        if(bit == 1){   // If bit is 1 we go on the right subtree
             if(p->right != NULL){
                 p = p->right;
-            } else {
+            } else {    // If we cant go further that means we got our longest prefix match
                 return p->value;
             }
-        } else {
+        } else {       // If bit is 0 we go on the left subtree
             if(p->left != NULL){
                 p = p->left;
-            } else {
+            } else {    // If we cant go further that means we got our longest prefix match
                 return p->value;
             }
         }
