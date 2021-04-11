@@ -102,11 +102,6 @@ void get_interface_mac(int interface, uint8_t *mac);
  */
 void init(int argc, char *argv[]);
 
-/**
- * @brief 
- * 
- */
-void parse_arp_table();
 
 /**
  * @brief 
@@ -176,3 +171,4 @@ struct arp_header* parse_arp(void *buffer);
  */
 int hwaddr_aton(const char *txt, uint8_t *addr);
 
+uint16_t ip_checksum(void* vdata,size_t length);

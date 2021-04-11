@@ -59,6 +59,17 @@ int main(int argc, char *argv[])
 				continue;
 			}
 
+
+			// Check the checksum
+			uint16_t received_iphdr_checksum = ip_hdr->check;
+			ip_hdr->check = 0;
+			uint16_t computed_iphdr_checksum = ip_checksum(ip_hdr, sizeof(struct iphdr));
+			ip_hdr->check = computed_iphdr_checksum;
+
+			if(received_iphdr_checksum != computed_iphdr_checksum) {
+				continue;
+			}
+
 			if(ip_hdr->protocol == 1) {	// If packet is ICMP
 				struct icmphdr *icmp_hdr = parse_icmp(&m.payload);
 				if(icmp_hdr->type == ICMP_ECHO){	// Check if the packet is ICMP Echo request
@@ -80,6 +91,12 @@ int main(int argc, char *argv[])
 			// Update the eth_hdr to go through the best route
 			memcpy(eth_hdr->ether_dhost, get_arp_entry(best_route->next_hop, arptable, arptable_size)->mac, ETH_ALEN);
 			get_interface_mac(best_route->interface, eth_hdr->ether_shost);
+
+
+			// Decrement ttl and update checksum before sending the packet
+			ip_hdr->ttl--;
+			ip_hdr->check = 0;
+			ip_hdr->check = ip_checksum(ip_hdr, sizeof(struct iphdr));
 
 			// Forward the packet
 			send_packet(best_route->interface, &m);
