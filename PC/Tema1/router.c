@@ -1,15 +1,14 @@
 #include <queue.h>
 #include "skel.h"
 #include "parser.h"
+#include "arp.h"
 
-struct arp_entry *get_arp_entry(__u32 ip, struct arp_entry *arptable, int arptable_size){
-	for(int i = 0; i < arptable_size; i++){
-		if(ip == arptable[i].ip){
-			return &arptable[i];
-		}
-	}
-    return NULL;
-}
+
+struct packet_queue_element {
+	packet m;
+	uint32_t next_hop_ip;
+	int send_interface;
+};
 
 /**
  * @brief  Checks if an ip belongs to a router
@@ -27,18 +26,41 @@ int is_router_ip(uint32_t ip){
 	return -1;
 }
 
+void handle_queued_packets(queue packet_queue, uint32_t next_hop_ip, uint8_t *next_hop_mac){
+	queue aux = queue_create();
+
+	while(!queue_empty(packet_queue)){
+		struct packet_queue_element *el = queue_deq(packet_queue);
+		if(el->next_hop_ip == next_hop_ip){
+			packet m = el->m;
+			struct ether_header *eth_hdr = (struct ether_header *)m.payload;
+			memcpy(eth_hdr->ether_dhost, next_hop_mac, ETH_ALEN);
+
+			send_packet(el->send_interface, &m);
+		} else {
+			queue_enq(aux, el);
+		}
+	}
+
+	while(!queue_empty(aux)){
+		struct packet_queue_element *el = queue_deq(aux);
+		queue_enq(packet_queue, el);
+	}
+}
+
 int main(int argc, char *argv[])
 {
 	packet m;
 	int rc;
 
 	struct Node *rtable = create_node(NULL);	// Initialize an empty tree for the routing table
-	struct arp_entry *arptable = malloc(sizeof (struct arp_entry) * MAX_ARPTABLE_ENTRIES);
+	struct arp_table *arp_table = init_arp_table();	// Initialize the arp table
 
 	int rtable_size = read_rtable(argv[1], rtable);	// Read the routing table file
 	DIE(rtable_size == 0, "No routes found");
 
-	int arptable_size = parse_arp_table(arptable);
+	queue packet_queue = queue_create();
+
 
 	init(argc - 2, argv + 2);
 
@@ -64,6 +86,11 @@ int main(int argc, char *argv[])
 				}
 			}
 			
+			if(arp_hdr->op == htons(ARPOP_REPLY)) {	// Chek if is an ARP reply
+				add_arp_entry(arp_table, arp_hdr->spa, arp_hdr->sha);	// Add the new entry
+
+				handle_queued_packets(packet_queue, arp_hdr->spa, arp_hdr->sha);
+			}
 			continue;
 		}
 
@@ -103,15 +130,33 @@ int main(int argc, char *argv[])
 				continue;
 			}
 			
-			// Update the eth_hdr to go through the best route
-			memcpy(eth_hdr->ether_dhost, get_arp_entry(best_route->next_hop, arptable, arptable_size)->mac, ETH_ALEN);
-			get_interface_mac(best_route->interface, eth_hdr->ether_shost);
-
-
+			
 			// Decrement ttl and update checksum before sending the packet
 			ip_hdr->ttl--;
 			ip_hdr->check = 0;
 			ip_hdr->check = ip_checksum(ip_hdr, sizeof(struct iphdr));
+
+			// Update the eth_hdr to go through the best route
+			get_interface_mac(best_route->interface, eth_hdr->ether_shost);
+			uint8_t *next_hop_mac = get_arp_entry(arp_table, best_route->next_hop);
+
+			if(next_hop_mac == NULL){ // Next hop is not in the arp table
+				struct ether_header *arp_eth_hdr = malloc(sizeof(struct ether_header));
+				get_interface_mac(best_route->interface, arp_eth_hdr->ether_shost);
+				memset(arp_eth_hdr->ether_dhost, 0xFF, ETH_ALEN);
+				arp_eth_hdr->ether_type = htons(ETHERTYPE_ARP);
+				send_arp(best_route->next_hop, inet_addr(get_interface_ip(best_route->interface)), arp_eth_hdr, best_route->interface, htons(ARPOP_REQUEST));
+
+				struct packet_queue_element *queue_el = malloc(sizeof(struct packet_queue_element));
+				queue_el->m = m;
+				queue_el->next_hop_ip = best_route->next_hop;
+				queue_el->send_interface = best_route->interface;
+
+				queue_enq(packet_queue, queue_el);
+				continue;
+			}
+			memcpy(eth_hdr->ether_dhost, next_hop_mac, ETH_ALEN);
+
 
 			// Forward the packet
 			send_packet(best_route->interface, &m);
