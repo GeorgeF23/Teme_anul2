@@ -3,3 +3,6 @@ public_tests/
 check
 Makefile.PA
 README.checker
+.vscode
+cpp.errors
+java.errors

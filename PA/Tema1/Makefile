@@ -1,26 +1,25 @@
-# Darius-Florentin Neatu <neatudarius@gmail.com>
+CC = g++
+CFLAGS = -Wall -Wextra -std=c++17 -Werror=vla -g
+LDFLAGS = -lm
 
-# Exemplu de Makefile pentru tema
+SRCS = $(sort $(wildcard *.cpp))
+TARGETS = $(patsubst %.cpp,%,$(SRCS))
 
-# tag-uri obligatorii (nume + comportament identic)
-# build    => compileaza toata tema
-#             (ATENTIE! E important - NU compilati in tag-urile de run. Sesizati?)
-# run-p$ID => ruleaza problema cu ID-ul specificat (1, 2, 3, 4)
-# clean    => sterge toate fisierele generate
+# build all targets
+build: $(TARGETS)
 
-# restul este la alegerea studentului
-# TODO
-
-# nume necesar (build)
-build:
-	# TODO
+# general rule for building a target
+%: %.cpp
+	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
 run-p1:      # nume necesar
+	./crypto
 
-run-p2:      # nume necesar
+# run-p2:      # nume necesar
 
-run-p3:      # nume necesar
+# run-p3:      # nume necesar
 
-run-p4:      # nume necesar
+# run-p4:      # nume necesar
 
 clean:		 # nume necesar
+	rm -f crypto

@@ -1,0 +1,19 @@
+Nume: Floarea George-Marian
+Grupa: 324CB
+
+1. Crypto
+
+Informatiile despre un calculator (putere, cost) sunt tinute in structura computer.
+Ideea algoritmului este urmatoarea:
+    - se sorteaza crescator vectorul de calculatoare dupa putere
+    - se calculeaza total_cost si c pentru fiecare calculator:
+        - total_cost[i] retine costul de upgrade pentru primele i calculatoare
+        - c[i] retine costul de upgrade pana la puterea calculatorului i
+        - daca c[i] < banii disponibili, atunci se poate aduce puterea totala de procesare
+        la puterea calculatorului i
+        - daca nu sunt destui bani, atunci se opreste calculul
+    - in final se verifica daca au mai ramas bani pentru upgrade-uri
+
+Complexitate de timp: O(n log n) data de sortare
+Complexitate de spatiu: O(n) data de vectori ce au marimea egala cu numarul de calculatoare
+unde n = numarul de calculatoare
