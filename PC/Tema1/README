@@ -1,0 +1,41 @@
+Nume: Floarea George-Marian
+Grupa: 324CB
+
+In fisierele arp.h / arp.c sunt implementate functii si sturcturi care m-au ajutat sa proiectez tabela pentru ARP.
+    - structura arp_entry contine un camp pentru adresa IP si un camp pentru adresa MAC
+    - structura arp_table contine un vector de arp_entry si lungimea acestui vector
+    - pentru a ma folosi de aceste structuri am implementat 3 functii care initializeaza o tabela ARP, adauga o noua intrare, extrage o intrare dupa IP
+
+In fisierele parser.h / parser.c sunt implementate functii si structuri pentru tabela de rutare.
+    - structura route_table_entry contine informatiile despre o ruta: prefix, next_hop, netmask, interface
+    - structura Node descrie un nod dintr-un tree pe care l-am folosit pentru cautarea rutei cu prefixul cel mai lung
+    - functia insert insereaza o intrare noua in tabela de rutare dupa urmatoarea regula:
+        - itereaza prin bitii prefixului
+            - daca bit-ul este 0 atunci continui cautarea in subarborele stang
+            - daca bit-ul este 1 atunci continui cautarea in subarborele drept
+            - daca nu exista subarbore stang/drept atunci il creez cu valoarea NULL
+        - dupa ce am terminat iterarea pun intrarea in ultimul nod vizitat
+    - functia calculate_best_route cauta o intrare dupa adresa IP data ca parametru
+        - foloseste o regula asemanatoare functiei insert, cu exceptia ca atunci cand nu gaseste
+        subarbore stang/drept se opreste, iar valoarea de la ultimul nod vizitat e ruta cu prefix cel mai lung
+    - functia read_rtable apeleaza insert pe toate rutele din fisierul dat ca parametru
+    
+    - restul functiilor au fost folosite pentru a le implementa pe cele 3 descrise mai sus
+
+Mecanismul router-ului este urmatorul:
+    Intr-o bucla infinita:
+        - primeste un pachet
+        - daca este pachet arp request catre un ip de-al lui atunci trimite un arp reply cu mac-ul corespunzator
+        - daca este pachet arp reply atunci memoreaza datele primite si cauta sa trimita pachetele care asteptau aceste informatii
+        - pentru restul pachetelor: 
+            - verifica ttl=1 si trimite un pachet icmp daca e cazul
+            - verifica checksum, iar daca nu e corect trece la urmatorul pachet
+            - daca e un icmp de tip echo request catre router raspunde cu echo reply si trece la urmatorul pachet
+            - decrementeaza ttl si recalculeaza checksum
+            - cauta cea mai buna ruta, iar daca nu gaseste trece la urmatorul pachet
+                - daca nu stie mac-ul pentru a urma cea mai buna ruta atunci trimire un arp reqest si pune pachetul in coada, apoi trece la urmatorul pachet
+                - daca stie mac-ul atunci trimite pachetul
+
+Probleme intalnite:
+    Protocolul ARP l-am implementat la final, iar pana atunci am folosit fisierul dat, insa am observat ca inca se faceau apeluri ARP atunci cand trimiteam primul pachet, 
+iar din cauza aceasta picam de fiecare data primul test indiferent de care ar fi acesta (am interschimbat testele in checker iar mereu primul test pica).
