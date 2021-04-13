@@ -17,3 +17,15 @@ Ideea algoritmului este urmatoarea:
 Complexitate de timp: O(n log n) data de sortare
 Complexitate de spatiu: O(n) data de vectori ce au marimea egala cu numarul de calculatoare
 unde n = numarul de calculatoare
+
+
+2. Stocks
+
+Informatiile despre un stock sunt tinute in strutura stock.
+    - in loc sa retin pretul minim si pretul maxim am retinut pierderea si profitul, deoarece doar de acestea aveam nevoie
+Algoritmul este unul de DP asemanator cu cel de la problema rucsacului, doar ca aici se mai adauga o restrictie, pierderea.
+Se considera subprobleme mai mici in care exista mai putine actiuni, un buget mai mic si o pierdere maxima mai mica.
+Rezultatul acestor subprobleme se retine in matricea 3D dp, iar rezultatul problemei finale se afla pe ultimul element din matrice.
+
+Complexitate de timp: O(N * B * L) data de iterarea prin matricea dp
+Complexitate de spatiu: O(N * B * L) data de dimensiunea matricii dp
