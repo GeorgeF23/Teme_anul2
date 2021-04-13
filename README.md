@@ -18,5 +18,5 @@ Object Oriented Programming
   -> HW2: Store management  
   -> Project: Auction house
 
-Communication Protocols
+Communication Protocols  
   -> HW1: Router
