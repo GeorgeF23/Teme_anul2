@@ -29,3 +29,12 @@ Rezultatul acestor subprobleme se retine in matricea 3D dp, iar rezultatul probl
 
 Complexitate de timp: O(N * B * L) data de iterarea prin matricea dp
 Complexitate de spatiu: O(N * B * L) data de dimensiunea matricii dp
+
+3. Valley
+
+Fundul vaii, partea comuna prefixului si sufixului, este cel mai mic element din interiorul vectorului de varfuri (fara primul si ultimul element).
+Dupa ce gasesc fundul vaii, pornesc de la stanga pana la acesta si "sap" pentru a crea prefixul, apoi de la dreapta pentru a crea sufixul.
+
+Complexitate de timp: O(n) data de iterarea prin vectorul de varfuri
+Complexitate de spatiu: O(n) data de vectorul de varfuri
+unde n = numarul de varfuri
