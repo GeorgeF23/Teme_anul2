@@ -1,5 +1,6 @@
+# Preluat din laborator
 CC = g++
-CFLAGS = -Wall -Wextra -std=c++17 -g
+CFLAGS = -Wall -Wextra -std=c++17
 LDFLAGS = -lm
 
 SRCS = $(sort $(wildcard *.cpp))
