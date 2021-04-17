@@ -1,0 +1,67 @@
+Nume: Floarea George-Marian
+Grupa: 324CB
+
+1. Crypto
+
+Informatiile despre un calculator (putere, cost) sunt tinute in structura computer.
+Ideea algoritmului este urmatoarea:
+    - se sorteaza crescator vectorul de calculatoare dupa putere
+    - se calculeaza total_cost si c pentru fiecare calculator:
+        - total_cost[i] retine costul de upgrade pentru primele i calculatoare
+        - c[i] retine costul de upgrade pana la puterea calculatorului i
+        - daca c[i] < banii disponibili, atunci se poate aduce puterea totala de procesare
+        la puterea calculatorului i
+        - daca nu sunt destui bani, atunci se opreste calculul
+    - in final se verifica daca au mai ramas bani pentru upgrade-uri
+
+Complexitate de timp: O(n log n) data de sortare
+Complexitate de spatiu: O(n) data de vectori ce au marimea egala cu numarul de calculatoare
+unde n = numarul de calculatoare
+
+
+2. Stocks
+
+Informatiile despre un stock sunt tinute in strutura stock.
+    - in loc sa retin pretul minim si pretul maxim am retinut pierderea si profitul, deoarece doar de acestea aveam nevoie
+Algoritmul este unul de DP asemanator cu cel de la problema rucsacului, doar ca aici se mai adauga o restrictie, pierderea.
+Se considera subprobleme mai mici in care exista mai putine actiuni, un buget mai mic si o pierdere maxima mai mica.
+Rezultatul acestor subprobleme se retine in matricea 3D dp, iar rezultatul problemei finale se afla pe ultimul element din matrice.
+
+Complexitate de timp: O(N * B * L) data de iterarea prin matricea dp
+Complexitate de spatiu: O(N * B * L) data de dimensiunea matricii dp
+
+3. Valley
+
+Fundul vaii, partea comuna prefixului si sufixului, este cel mai mic element din interiorul vectorului de varfuri (fara primul si ultimul element).
+Dupa ce gasesc fundul vaii, pornesc de la stanga pana la acesta si "sap" pentru a crea prefixul, apoi de la dreapta pentru a crea sufixul.
+
+Complexitate de timp: O(n) data de iterarea prin vectorul de varfuri
+Complexitate de spatiu: O(n) data de vectorul de varfuri
+unde n = numarul de varfuri
+
+4. Ridge
+
+Am descoperit ca pentru o solutie optima, un munte poate fi sapat de 0, 1 sau 2 ori.
+Am folosit un algoritm de DP: 
+    - dp[i][0] = solutia tinand cont doar de primii i munti si sapand de 0 ori ultimul munte
+    - dp[i][1] = solutia tinand cont doar de primii i munti si sapand o data ultimul munte
+    - dp[i][2] = solutia tinand cont doar de primii i munti si sapand de 2 ori ultimul munte
+
+    - dp[i][j] se calculeaza adunand minimul de pe linia d[i - 1] cu costul de a sapa de j ori muntele i
+    tinand cont si de inaltimile muntilor, astfel incat acestea sa nu fie egale
+
+Ex: daca muntele doi are inaltimea 3, iar muntele trei are inaltimea 4 nu se poate sapa o data muntele trei decat
+daca muntele doi e sapat de 1 sau 2 ori
+
+    Se verifica si daca muntele va avea o inaltime negativa in urma sapaturilor, punand in dp[i][j] o valoare
+foarte mare.
+
+    Solutia finala va fi minimul de pe ultima linie.
+
+Complexitate de timp: O(n) data de iterarea prin vectorul de munti
+Complexitate de spatiu: O(n) data de matricea dp si vectorul de munti
+unde n = numarul de munti
+
+!! Pentru a evita liniile mai lungi de 80 de caractere am folosit 2 macro-uri:
+    MIN2(a, b) calucleaza minimul dintre dp[i-1][a] si dp[i-1][b]
+    MIN3 calculeaza minimul dintre dp[i-1][0], dp[i-1][1], dp[i-1][2]
