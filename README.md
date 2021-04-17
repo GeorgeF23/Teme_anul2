@@ -19,4 +19,7 @@ Object Oriented Programming
   -> Project: Auction house
 
 Communication Protocols  
-  -> HW1: Router
+  -> HW1: Router  
+
+Algorithm Design  
+  -> HW1: DP, Greedy
