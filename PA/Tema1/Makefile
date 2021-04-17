@@ -17,10 +17,15 @@ run-p1:      # nume necesar
 
 run-p2:      # nume necesar
 	./stocks
-# run-p3:      # nume necesar
 
-# run-p4:      # nume necesar
+run-p3:      # nume necesar
+	./valley
+
+run-p4:      # nume necesar
+	./ridge
 
 clean:		 # nume necesar
 	rm -f crypto
 	rm -f stocks
+	rm -f valley
+	rm -f ridge
