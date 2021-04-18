@@ -111,3 +111,8 @@ get_exam_diff_table = (["Nume","Punctaj interviu","Punctaj scris","Diferenta"] :
             | entry1 !! 3 < entry2 !! 3 = LT
             | entry1 !! 3 == entry2 !! 3 = if head entry1 < head entry2 then LT else GT
             | otherwise = GT
+
+
+{-
+	TASK SET 2
+-}
