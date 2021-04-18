@@ -31,8 +31,8 @@ run_test 1 3 = show $ get_avg_responses_per_qs exam_grades
 run_test 1 4 = show $ get_exam_summary exam_grades
 run_test 1 5 = show $ get_ranking exam_grades
 run_test 1 6 = show $ get_exam_diff_table exam_grades
--- run_test 2 3 = write_csv $ vmap (\x -> if x == "" then "0" else x) $ read_csv exam_grades_csv
--- run_test 2 4 = write_csv $ rmap get_hw_grade_total ["Nume", "Total teme"] $ read_csv hw_grades_csv
+run_test 2 3 = write_csv $ vmap (\x -> if x == "" then "0" else x) $ read_csv exam_grades_csv
+run_test 2 4 = write_csv $ rmap get_hw_grade_total ["Nume", "Total teme"] $ read_csv hw_grades_csv
 -- run_test 2 7 = write_csv $ tjoin "Nume" (read_csv hw_grades_csv) (read_csv exam_grades_csv)
 
 run_subtest 1 2 1 = show $ get_passed_students_num exam_grades

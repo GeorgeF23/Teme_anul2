@@ -138,3 +138,14 @@ tsort column table = head table : sortBy cmp (tail table)
             | row1 !! get_column_index column (head table) > row2 !! get_column_index column (head table) = GT
             | row1 !! get_column_index column (head table) < row2 !! get_column_index column (head table) = LT
             | otherwise = if head row1 > head row2 then GT else LT
+
+-- Task 3
+vmap :: (Value -> Value) -> Table -> Table
+vmap op = map (map op)
+
+-- Task 4
+rmap :: (Row -> Row) -> [String] -> Table -> Table
+rmap op new_columns = (:) new_columns . map op . tail
+
+get_hw_grade_total :: Row -> Row
+get_hw_grade_total row = [head row, float_to_string $ sum $ map string_to_float $ tail $ tail row]
