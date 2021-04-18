@@ -123,9 +123,18 @@ read_csv :: CSV -> Table
 read_csv = map (splitOn ",") . splitOn "\n"
 
 write_csv :: Table -> CSV
-write_csv = concatMap (tail . foldr (\el acc -> "," ++ el ++ acc) "\n")
+write_csv = tail . concatMap ((++) "\n" . tail . foldr (\el acc -> "," ++ el ++ acc) "")
 
 -- Task 1
 as_list :: String -> Table -> [String]
 as_list column table = tail $ map (\row -> row !! get_column_index column (head table)) table
 
+-- Task 2
+tsort :: String -> Table -> Table
+tsort column table = head table : sortBy cmp (tail table)
+    where
+        cmp :: Row -> Row -> Ordering
+        cmp row1 row2
+            | row1 !! get_column_index column (head table) > row2 !! get_column_index column (head table) = GT
+            | row1 !! get_column_index column (head table) < row2 !! get_column_index column (head table) = LT
+            | otherwise = if head row1 > head row2 then GT else LT
