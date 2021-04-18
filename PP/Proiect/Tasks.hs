@@ -149,3 +149,16 @@ rmap op new_columns = (:) new_columns . map op . tail
 
 get_hw_grade_total :: Row -> Row
 get_hw_grade_total row = [head row, float_to_string $ sum $ map string_to_float $ tail $ tail row]
+
+-- Task 5
+vunion :: Table -> Table -> Table
+vunion table1 table2 = if head table1 == head table2 then table1 ++ tail table2 else table1
+
+-- Task 6
+hunion :: Table -> Table -> Table
+hunion table1 table2 = if length table1 > length table2 then
+                            zipWith (++) table1 (extend_tables table1 table2) else
+                            zipWith (++) (extend_tables table2 table1) table2
+    where
+        extend_tables :: Table -> Table -> Table
+        extend_tables big_table small_table = small_table ++ replicate (length big_table - length small_table) (replicate (length $ head small_table) "")
