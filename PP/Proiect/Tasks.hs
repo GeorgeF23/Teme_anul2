@@ -7,7 +7,9 @@
 
 module Tasks where
 
+import Data.Maybe
 import Data.List
+import Data.List.Split
 
 import Dataset
 import MyUtils
@@ -57,16 +59,16 @@ get_passed_hw_num = length . filter (>= 1.5) . map (sum . map string_to_float . 
 
 -- Task 3
 get_avg_responses_per_qs :: Table -> Table
-get_avg_responses_per_qs grades = ["Q1","Q2","Q3","Q4","Q5","Q6"] : 
-    [map (float_to_string . (/ (fromIntegral $ length $ tail grades))) 
+get_avg_responses_per_qs grades = ["Q1","Q2","Q3","Q4","Q5","Q6"] :
+    [map (float_to_string . (/ (fromIntegral $ length $ tail grades)))
         (foldl (zipWith (+)) [0.0, 0.0, 0.0, 0.0, 0.0, 0.0] $ map( map string_to_float . take 6 . tail) $ tail grades)]
 
 -- Task 4
 get_exam_summary :: Table -> Table
-get_exam_summary = construct_table . 
+get_exam_summary = construct_table .
     -- foldl-ul are ca acumulator o lista de lista in care sunt tinute punctajele de la fiecare intrebare
     -- zipWith-ul executa functia 'increment_question_numbers' intre fiecare punctaj al fiecarei intrebari si lista din acumulator corespunzatoare intrebarii
-    foldl (zipWith increment_question_numbers) [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]] . 
+    foldl (zipWith increment_question_numbers) [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]] .
     map( map string_to_integer . take 6 . tail) .   -- extrage doar punctajele intrbarilor de la examenul interviu
     tail
     where
@@ -76,7 +78,7 @@ get_exam_summary = construct_table .
             acc                     lista de 3 elemente unde sunt contorizate punctajele unei intrebari
             question_points         punctajul obtinut la intrebare
         -}
-        
+
         increment_question_numbers :: [Integer] -> Integer -> [Integer]
         increment_question_numbers acc question_points
             | question_points == 0 = increment_field 0 acc
@@ -100,10 +102,10 @@ get_ranking = (["Nume","Punctaj Exam"] :) . sortBy cmp . tail . compute_exam_gra
 
 -- Task 6
 get_exam_diff_table :: Table -> Table
-get_exam_diff_table = (["Nume","Punctaj interviu","Punctaj scris","Diferenta"] :) . 
-    sortBy cmp . 
-    map ((\line -> line ++ [float_to_string $ abs (string_to_float (line !! 1) - string_to_float (line !! 2))]) . 
-        (\line -> head line : float_to_string (compute_one_interview_exam_grade $ tail line) : [float_to_string $ string_to_float (line !! 7)])) . 
+get_exam_diff_table = (["Nume","Punctaj interviu","Punctaj scris","Diferenta"] :) .
+    sortBy cmp .
+    map ((\line -> line ++ [float_to_string $ abs (string_to_float (line !! 1) - string_to_float (line !! 2))]) .
+        (\line -> head line : float_to_string (compute_one_interview_exam_grade $ tail line) : [float_to_string $ string_to_float (line !! 7)])) .
     tail
     where
         cmp :: Row -> Row -> Ordering
@@ -116,3 +118,14 @@ get_exam_diff_table = (["Nume","Punctaj interviu","Punctaj scris","Diferenta"] :
 {-
 	TASK SET 2
 -}
+
+read_csv :: CSV -> Table
+read_csv = map (splitOn ",") . splitOn "\n"
+
+write_csv :: Table -> CSV
+write_csv = concatMap (tail . foldr (\el acc -> "," ++ el ++ acc) "\n")
+
+-- Task 1
+as_list :: String -> Table -> [String]
+as_list column table = tail $ map (\row -> row !! get_column_index column (head table)) table
+
