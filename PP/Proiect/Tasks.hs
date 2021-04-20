@@ -127,7 +127,7 @@ write_csv = tail . concatMap ((++) "\n" . tail . foldr (\el acc -> "," ++ el ++ 
 
 -- Task 1
 as_list :: String -> Table -> [String]
-as_list column table = tail $ map (\row -> row !! get_column_index column (head table)) table
+as_list column table = tail $ map (\row -> row !! get_element_index column (head table)) table
 
 -- Task 2
 tsort :: String -> Table -> Table
@@ -135,8 +135,8 @@ tsort column table = head table : sortBy cmp (tail table)
     where
         cmp :: Row -> Row -> Ordering
         cmp row1 row2
-            | row1 !! get_column_index column (head table) > row2 !! get_column_index column (head table) = GT
-            | row1 !! get_column_index column (head table) < row2 !! get_column_index column (head table) = LT
+            | row1 !! get_element_index column (head table) > row2 !! get_element_index column (head table) = GT
+            | row1 !! get_element_index column (head table) < row2 !! get_element_index column (head table) = LT
             | otherwise = if head row1 > head row2 then GT else LT
 
 -- Task 3
@@ -164,7 +164,20 @@ hunion table1 table2 = if length table1 > length table2 then
         extend_tables big_table small_table = small_table ++ replicate (length big_table - length small_table) (replicate (length $ head small_table) "")
 
 -- Task 7
--- tjoin :: String -> Table -> Table -> Table
+tjoin :: String -> Table -> Table -> Table
+tjoin column table1 table2 = map join table1
+    where
+        join :: Row -> Row
+        join row1 = if null (get_matching_row row1 table2) then extend_row (length (head table2) - 1) row1 else row1 ++ remove_element_at_index (get_element_index column (head table2)) (get_matching_row row1 table2)
+
+        get_matching_row :: Row -> Table -> Row
+        get_matching_row row1 table2 = if not (any (matching_rows row1) table2) then [] else head $ filter (matching_rows row1) table2
+
+        matching_rows :: Row -> Row -> Bool
+        matching_rows row1 row2 = row1 !! get_element_index column (head table1) == row2 !! get_element_index column (head table2)
+
+        extend_row :: Int -> Row -> Row
+        extend_row additional_values row = row ++ replicate additional_values ""
 
 -- Task 8
 cartesian :: (Row -> Row -> Row) -> [String] -> Table -> Table -> Table
@@ -173,11 +186,11 @@ cartesian op columns table1 table2 = columns : aux op (tail table1) (tail table2
         aux :: (Row -> Row -> Row) -> Table -> Table -> Table
         aux op [] _ = []
         aux op (x:xs) [] = aux op xs (tail table2)
-        aux op (x:xs) (y:ys) = op x y : aux op (x:xs) ys
+        aux op (x:xs) (y:ys) = if null (op x y) then aux op (x:xs) ys else op x y : aux op (x:xs) ys
 
 -- Task 9
 projection :: [String] -> Table -> Table
 projection columns table = map extract_columns table
     where
         extract_columns :: Row -> Row
-        extract_columns row = map (\column -> row !! get_column_index column (head table)) columns
+        extract_columns row = map (\column -> row !! get_element_index column (head table)) columns
