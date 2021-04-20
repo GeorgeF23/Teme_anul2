@@ -1,4 +1,4 @@
-module MyUtils(string_to_float, string_to_integer, increment_field, float_to_string, get_element_index, remove_element_at_index) where
+module MyUtils(string_to_float, string_to_integer, increment_field, float_to_string, get_element_index, remove_element_at_index, splitOn) where
 
 import Text.Printf
 import Data.Maybe
@@ -27,3 +27,7 @@ get_element_index el list = fromJust $ elemIndex el list
 -- Removes an element at a specified index from list
 remove_element_at_index :: (Eq a) => Int -> [a] -> [a]
 remove_element_at_index index list = foldr (\el acc -> if get_element_index el list == index then acc else el : acc) [] list
+
+-- Splits a list by a separator
+splitOn :: Eq a => a -> [a] -> [[a]]
+splitOn separator = foldr (\x acc@(y:ys) -> if x == separator then []:acc else (x:y):ys) [[]]

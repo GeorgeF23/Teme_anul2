@@ -9,7 +9,6 @@ module Tasks where
 
 import Data.Maybe
 import Data.List
-import Data.List.Split
 
 import Dataset
 import MyUtils
@@ -120,7 +119,7 @@ get_exam_diff_table = (["Nume","Punctaj interviu","Punctaj scris","Diferenta"] :
 -}
 
 read_csv :: CSV -> Table
-read_csv = map (splitOn ",") . splitOn "\n"
+read_csv = map (splitOn ',') . splitOn '\n'
 
 write_csv :: Table -> CSV
 write_csv = tail . concatMap ((++) "\n" . tail . foldr (\el acc -> "," ++ el ++ acc) "")
