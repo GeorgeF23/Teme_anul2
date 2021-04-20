@@ -47,12 +47,12 @@ run_subtest 2 5 1 = write_csv $ vunion test_table1 test_table2
 run_subtest 2 5 2 = write_csv $ vunion test_table1 test_table3
 run_subtest 2 6 1 = write_csv $ hunion (take 100 $ read_csv hw_grades_csv) (take 100 $ read_csv exam_grades_csv)
 run_subtest 2 6 2 = write_csv $ hunion (read_csv hw_grades_csv) (read_csv exam_grades_csv)
--- run_subtest 2 8 1 = write_csv $ cartesian (++) test_schema1 (take 5 $ read_csv hw_grades_csv) (take 10 $ read_csv hw_grades_csv)
--- run_subtest 2 8 2 = write_csv $ cartesian names_only test_schema2 (take 5 $ read_csv hw_grades_csv) (take 10 $ read_csv exam_grades_csv)
---     where
---         names_only = (\row1 row2 -> [head row1, head row2])
--- run_subtest 2 9 1 = write_csv $ projection ["Nume", "Lab (1p)"] $ read_csv hw_grades_csv
--- run_subtest 2 9 2 = write_csv $ projection ["Nume","Lab (1p)","T1 (0.5p)","T2 (1p)","T3 (1.5p)"] $ read_csv hw_grades_csv
+run_subtest 2 8 1 = write_csv $ cartesian (++) test_schema1 (take 5 $ read_csv hw_grades_csv) (take 10 $ read_csv hw_grades_csv)
+run_subtest 2 8 2 = write_csv $ cartesian names_only test_schema2 (take 5 $ read_csv hw_grades_csv) (take 10 $ read_csv exam_grades_csv)
+    where
+        names_only = (\row1 row2 -> [head row1, head row2])
+run_subtest 2 9 1 = write_csv $ projection ["Nume", "Lab (1p)"] $ read_csv hw_grades_csv
+run_subtest 2 9 2 = write_csv $ projection ["Nume","Lab (1p)","T1 (0.5p)","T2 (1p)","T3 (1.5p)"] $ read_csv hw_grades_csv
 
 test_table1 = take 5 $ read_csv hw_grades_csv
 test_table2 = (head $ read_csv hw_grades_csv):(drop 5 $ read_csv hw_grades_csv)

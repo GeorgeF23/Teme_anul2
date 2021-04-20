@@ -20,5 +20,6 @@ float_to_string = printf "%.2f"
 increment_field :: Int -> [Integer] -> [Integer]
 increment_field field_no list = take field_no list ++ [list !! max 0 field_no + 1] ++ drop (min (length list) field_no + 1) list
 
+-- Returns the index of an element in a list
 get_column_index :: (Eq a) => a -> [a] -> Int
 get_column_index column row = fromJust $ elemIndex column row

@@ -162,3 +162,22 @@ hunion table1 table2 = if length table1 > length table2 then
     where
         extend_tables :: Table -> Table -> Table
         extend_tables big_table small_table = small_table ++ replicate (length big_table - length small_table) (replicate (length $ head small_table) "")
+
+-- Task 7
+-- tjoin :: String -> Table -> Table -> Table
+
+-- Task 8
+cartesian :: (Row -> Row -> Row) -> [String] -> Table -> Table -> Table
+cartesian op columns table1 table2 = columns : aux op (tail table1) (tail table2)
+    where
+        aux :: (Row -> Row -> Row) -> Table -> Table -> Table
+        aux op [] _ = []
+        aux op (x:xs) [] = aux op xs (tail table2)
+        aux op (x:xs) (y:ys) = op x y : aux op (x:xs) ys
+
+-- Task 9
+projection :: [String] -> Table -> Table
+projection columns table = map extract_columns table
+    where
+        extract_columns :: Row -> Row
+        extract_columns row = map (\column -> row !! get_column_index column (head table)) columns
