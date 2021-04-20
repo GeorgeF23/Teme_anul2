@@ -24,5 +24,6 @@ increment_field field_no list = take field_no list ++ [list !! max 0 field_no + 
 get_element_index :: (Eq a) => a -> [a] -> Int
 get_element_index el list = fromJust $ elemIndex el list
 
+-- Removes an element at a specified index from list
 remove_element_at_index :: (Eq a) => Int -> [a] -> [a]
 remove_element_at_index index list = foldr (\el acc -> if get_element_index el list == index then acc else el : acc) [] list

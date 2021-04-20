@@ -160,6 +160,7 @@ hunion table1 table2 = if length table1 > length table2 then
                             zipWith (++) table1 (extend_tables table1 table2) else
                             zipWith (++) (extend_tables table2 table1) table2
     where
+        -- If a table has less rows than the other one, add rows with empty strings to it
         extend_tables :: Table -> Table -> Table
         extend_tables big_table small_table = small_table ++ replicate (length big_table - length small_table) (replicate (length $ head small_table) "")
 
@@ -167,15 +168,21 @@ hunion table1 table2 = if length table1 > length table2 then
 tjoin :: String -> Table -> Table -> Table
 tjoin column table1 table2 = map join table1
     where
+        -- If there is a matching row in the second table, append it to row1 else add empty string to row1
         join :: Row -> Row
-        join row1 = if null (get_matching_row row1 table2) then extend_row (length (head table2) - 1) row1 else row1 ++ remove_element_at_index (get_element_index column (head table2)) (get_matching_row row1 table2)
+        join row1 = if null (get_matching_row row1 table2) then 
+            extend_row (length (head table2) - 1) row1 else 
+            row1 ++ remove_element_at_index (get_element_index column (head table2)) (get_matching_row row1 table2)
 
+        -- Returns the matching row in the second table or empty list if not found
         get_matching_row :: Row -> Table -> Row
         get_matching_row row1 table2 = if not (any (matching_rows row1) table2) then [] else head $ filter (matching_rows row1) table2
 
+        -- Checks if two rows have the same key value
         matching_rows :: Row -> Row -> Bool
         matching_rows row1 row2 = row1 !! get_element_index column (head table1) == row2 !! get_element_index column (head table2)
 
+        -- Creates a list of empty strings
         extend_row :: Int -> Row -> Row
         extend_row additional_values row = row ++ replicate additional_values ""
 
