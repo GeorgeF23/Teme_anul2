@@ -8,8 +8,10 @@
 #include <sys/stat.h>
 #include <sys/socket.h>
 #include <string.h>
+#include <math.h>
 
 #include "utils.h"
+#include "message.h"
 
 int init_udp_listener(int port) {
 
@@ -33,21 +35,32 @@ int init_udp_listener(int port) {
 }
 
 int main(int argc, char **argv) {
-    
+    setvbuf(stdout, NULL, _IONBF, BUFSIZ);
     if (argc != 2) {
-        printf ("Usage: ./server PORT\n");
+        fprintf(stderr, "Usage: ./server PORT\n");
         exit(1);
     }
 
-    char buffer[BUFLEN];
+    struct message buffer;
     int udp_fd = init_udp_listener(atoi(argv[1]));
     
-
     while(1) {
-        ssize_t count = recvfrom(udp_fd, buffer, BUFLEN, 0, NULL, NULL);
-        DIE(count == -1, "recvrrom");
+        ssize_t count = recvfrom(udp_fd, &buffer, MESSAGE_LENGTH, 0, NULL, NULL);
+        DIE(count == -1, "recvfrom");
 
-        printf("Primit mesaj: %s\n", buffer);
+        printf("Primit mesaj: %s; %d; ", buffer.topic, buffer.type);
+        if (buffer.type == 0) {
+            printf("%d %d", buffer.contents.int_info.sign, ntohl(buffer.contents.int_info.value));
+        } else if (buffer.type == 1) {
+            printf("%f", ((float)ntohs(buffer.contents.short_real_info.value)) / 100);
+        } else if (buffer.type == 2) {
+            float value = ((float)ntohl(buffer.contents.float_info.value)) / pow(10, buffer.contents.float_info.decimal_digits);
+            printf("%f", value);
+        } else if (buffer.type == 3) {
+            printf("%s", buffer.contents.string_info.value);
+        }
+
+        printf("\n");
     }
     return 0;
 }
