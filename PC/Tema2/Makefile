@@ -1,5 +1,5 @@
 build:
-	gcc -g  server.c -o server -lm
+	gcc server.c udp.c -o server
 
 run:
 	./server 12345
