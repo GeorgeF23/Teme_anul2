@@ -50,9 +50,8 @@ int main(int argc, char **argv) {
                 if (i == STDIN_FILENO) {
                     // Incoming data from stdin
                     char buffer[16];
-                    scanf("%s", buffer);
-
-                    if (strcmp(buffer, "exit") == 0) {
+                    fgets(buffer, 16, stdin);
+                    if (strncmp(buffer, "exit", 4) == 0) {
                         goto end;
                     } else {
                         fprintf(stderr, "Invalid input!\n");
