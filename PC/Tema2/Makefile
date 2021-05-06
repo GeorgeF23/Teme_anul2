@@ -7,14 +7,14 @@ OBJS = $(patsubst %.c,%.o,$(SRCS))
 SERVER_FILES = server.o tcp.o udp.o
 SUBSCRIBER_FILES = subscriber.o list.o
 
-build: build_server build_subscriber
+build: subscriber server
 
 # make subscriber executable
-build_subscriber: build_objects
+subscriber: build_objects
 	$(CC) $(CFLAGS) $(SUBSCRIBER_FILES) -o subscriber
 
 # make server executable
-build_server: build_objects
+server: build_objects
 	$(CC) $(CFLAGS) $(SERVER_FILES) -o server
 
 # build objects
