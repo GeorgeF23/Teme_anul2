@@ -15,3 +15,4 @@ build_objects: $(OBJS)
 
 clean:
 	rm -f $(OBJS)
+	rm -f server
