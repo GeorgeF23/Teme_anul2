@@ -32,3 +32,16 @@ void *search(list l, void *other, equals eq) {
     }
     return NULL;
 }
+
+void remove_node(list *l, void *info) {
+    if ((*l)->info == info) {
+        // First element in list matches
+        *l = (*l)->next;
+    } else {
+        for (list p = *l; p ->next != NULL; p = p->next) {
+            if (p->info == info) {
+                p->next = p->next->next;
+            }
+        }
+    }
+}

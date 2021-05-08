@@ -87,7 +87,22 @@ int main(int argc, char **argv) {
 
         for (int i = 0; i <= fdmax; i++) {
             if (FD_ISSET(i, &tmp_fds)) {
-                if (i == tcp_socket) {
+                if (i == STDIN_FILENO) {
+                    char buffer[100];
+                    fgets(buffer, sizeof(buffer), stdin);
+
+                    if (strncmp(buffer, "exit", 4) == 0) {
+                        // Tell the server to close the socket
+                        struct client_command_info command;
+                        command.type = EXIT;
+
+                        int ret = send(tcp_socket, &command, sizeof(command), 0);
+                        DIE(ret < 0, "send");
+                        goto end;
+                    } else {
+                        fprintf(stderr, "Invalid input!\n");
+                    }
+                } else if (i == tcp_socket) {
                     // Message received from server
                     struct message m;
                     int ret = recv(i, &m, sizeof(m), 0);

@@ -45,10 +45,11 @@ int send_close_message(int socket, fd_set *read_fds) {
  * @note   
  * @param  socket: the socket where the command came from
  * @param  *connected_clients: list of connected clients
+ * @param  *disconnected_clients: list of disconnected clients
  * @param  *read_fds: set of descriptors
  * @retval None
  */
-void handle_client_command(int socket, list *connected_clients, fd_set *read_fds) {
+void handle_client_command(int socket, list *connected_clients, list *disconnected_clients, fd_set *read_fds) {
     // Initialize and receive the command
     struct client_command_info command;
     memset(&command, 0, sizeof(command));
@@ -69,6 +70,20 @@ void handle_client_command(int socket, list *connected_clients, fd_set *read_fds
             char *ip = inet_ntoa((struct in_addr){client_by_socket->socket_info.sin_addr.s_addr});
             printf("New client %s connected from %s:%d\n", client_by_socket->id, ip, client_by_socket->socket_info.sin_port);
         }
+    } else if (command.type == EXIT) {
+        // Clients wants to close the connection.
+        struct client_info *client = search(*connected_clients, &socket, client_has_socket);
+        printf("Client %s disconnected.\n", client->id);
+
+        remove_node(connected_clients, client);
+
+        int ret = insert(disconnected_clients, client);
+        DIE(ret == 0, "insert");
+
+        ret = close(socket); 
+        DIE(ret < 0, "close");
+
+        FD_CLR(socket, read_fds);
     }
 }
 
@@ -104,6 +119,7 @@ int main(int argc, char **argv) {
     fdmax = (tcp_fd > udp_fd) ? tcp_fd : udp_fd; // Update the biggest file descriptor
 
     list connected_clients = NULL;
+    list disconnected_clients = NULL;
 
     while(1) {
         tmp_fds = read_fds; // Create copy of fd set
@@ -117,7 +133,7 @@ int main(int argc, char **argv) {
                 if (i == STDIN_FILENO) {
                     // Incoming data from stdin
                     char buffer[16];
-                    fgets(buffer, 16, stdin);
+                    fgets(buffer, sizeof(buffer), stdin);
                     if (strncmp(buffer, "exit", 4) == 0) {
                         goto end;
                     } else {
@@ -140,7 +156,7 @@ int main(int argc, char **argv) {
                     FD_SET(new_client->socket, &read_fds);
                 } else {
                     // Command received from client
-                    handle_client_command(i, &connected_clients, &read_fds);
+                    handle_client_command(i, &connected_clients, &disconnected_clients, &read_fds);
                 }
             }
         }

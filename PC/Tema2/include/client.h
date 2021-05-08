@@ -17,6 +17,11 @@
 #define MAX_CLIENT_ID_LEN 11
 
 
+#define SEND_ID 1
+#define SUBSCRIBE 2
+#define UNSUBSCRIBE 3
+#define EXIT 4
+
 /* Contains all the information about a client */
 struct client_info {
     int socket;

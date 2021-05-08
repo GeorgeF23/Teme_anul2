@@ -39,4 +39,13 @@ int insert(list *l, void *el);
  * @retval Info field in the node
  */
 void *search(list l, void *other, equals eq);
+
+/**
+ * @brief  Removes a node from a list
+ * @note   
+ * @param  *l: the list
+ * @param  *info: the info field of the node
+ * @retval None
+ */
+void remove_node(list *l, void *info);
 #endif

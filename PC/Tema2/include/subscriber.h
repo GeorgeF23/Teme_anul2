@@ -16,12 +16,6 @@
 #include "utils.h"
 #include "client.h"
 
-#define SEND_ID 1
-#define SUBSCRIBE 2
-#define UNSUBSCRIBE 3
-#define EXIT 4
-
-
 
 /**
  * @brief  Connects the client to the server
