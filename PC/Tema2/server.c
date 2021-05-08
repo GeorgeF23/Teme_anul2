@@ -19,7 +19,13 @@
 #include "client.h"
 #include "list.h"
 
-
+/**
+ * @brief  Sends a message to a subscriber telling him to shut down
+ * @note   
+ * @param  socket: the socket to send the message
+ * @param  *read_fds: the set of descriptors
+ * @retval 0 on success / -1 on error
+ */
 int send_close_message(int socket, fd_set *read_fds) {
     struct message m;
     m.type = CLOSE_CLIENT;
@@ -34,13 +40,25 @@ int send_close_message(int socket, fd_set *read_fds) {
     return 0;
 }
 
+/**
+ * @brief  Handles commands received from clients
+ * @note   
+ * @param  socket: the socket where the command came from
+ * @param  *connected_clients: list of connected clients
+ * @param  *read_fds: set of descriptors
+ * @retval None
+ */
 void handle_client_command(int socket, list *connected_clients, fd_set *read_fds) {
+    // Initialize and receive the command
     struct client_command_info command;
     memset(&command, 0, sizeof(command));
     int count = recv(socket, &command, sizeof(command), 0);
     DIE(count < 0, "recv");
 
     if (command.type == SEND_ID) {
+        // Client sends an id
+
+        // Check if a client already has that id.
         struct client_info *client_by_id = search(*connected_clients, command.un.id, client_has_id);
         if (client_by_id != NULL) {
             printf("Client %s already connected.\n", command.un.id);
