@@ -23,3 +23,12 @@ int insert(list *l, void *el) {
     if (p->next == NULL) return 0;
     return 1;
 }
+
+void *search(list l, void *other, equals eq) {
+    for (list p = l; p != NULL; p = p->next) {
+        if (eq(p->info, other) == 1) {
+            return p->info;
+        }
+    }
+    return NULL;
+}

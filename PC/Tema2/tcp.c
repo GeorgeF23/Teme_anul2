@@ -24,12 +24,22 @@ int init_tcp_listener(int port) {
     return sock;
 }
 
-int accept_new_client(int fd) {
-    struct sockaddr_in client_addr;
-    socklen_t client_addr_len = sizeof(client_addr);
+struct client_info *accept_new_client(int fd) {
+    struct client_info *client = malloc(sizeof(struct client_info));
+    if (client == NULL) return NULL;
 
-    int client_socket = accept(fd, (struct sockaddr *) &client_addr, &client_addr_len);
-    if (client_socket < 0) return -1;
+    client->socket_info_len = sizeof(struct sockaddr_in);
 
-    return client_socket;
+    int client_socket = accept(fd, (struct sockaddr *) &client->socket_info, &client->socket_info_len);
+    if (client_socket < 0) return NULL;
+
+    // Disable Neagle
+    int flag = 1;
+    int result = setsockopt(client_socket, IPPROTO_TCP, TCP_NODELAY, (char *) &flag,  sizeof(int));
+    if (result < 0) return NULL;
+
+    client->socket = client_socket;
+    memset(client->id, 0, MAX_CLIENT_ID_LEN);
+
+    return client;
 }

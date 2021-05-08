@@ -3,11 +3,21 @@
 #pragma pack(1)
 
 #define CONTENT_LENGTH 1500
+#define TOPIC_LENGTH 50
 
+#define INT_TYPE 0
+#define SHORT_REAL_TYPE 1
+#define FLOAT_TYPE 2
+#define STRING_TYPE 3
+#define CLOSE_CLIENT 4  // Special message type to tell the client to terminate
 
+struct subscription_info {
+    char topic[CONTENT_LENGTH];
+    uint8_t sf;
+};
 
 struct message {
-    char topic[50];
+    char topic[TOPIC_LENGTH];
     unsigned int type:8;
     union {
         struct int_type {

@@ -3,7 +3,7 @@
 
 #include <stdlib.h>
 
-typedef int (*cmp)(void *el1, void *el2);
+typedef int (*equals)(void *el1, void *el2);
 
 typedef struct node *list;
 
@@ -30,5 +30,13 @@ struct node *create_node(void *el);
  */
 int insert(list *l, void *el);
 
-
+/**
+ * @brief  Search for an element in list
+ * @note   
+ * @param  l: the list
+ * @param *other: the element we search for
+ * @param  eq: equals function. Returns 1 if is a match / 0 if not
+ * @retval Info field in the node
+ */
+void *search(list l, void *other, equals eq);
 #endif
