@@ -10,6 +10,7 @@
 #include <netdb.h>
 #include <string.h>
 #include <stdio.h>
+#include <math.h>
 
 #include "list.h"
 #include "message.h"
@@ -54,4 +55,11 @@ int send_subscribe_to_server(int socket, char *topic, int sf);
  */
 int send_unsubscribe_to_server(int socket, char *topic);
 
+/**
+ * @brief  Parses and prints a message
+ * @note   
+ * @param  msg_info: the message
+ * @retval None
+ */
+void print_message(struct message_info msg_info);
 #endif

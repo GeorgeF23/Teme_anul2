@@ -27,8 +27,8 @@
  * @retval 0 on success / -1 on error
  */
 int send_close_message(int socket, fd_set *read_fds) {
-    struct message m;
-    m.type = CLOSE_CLIENT;
+    struct message_info m;
+    m.msg.type = CLOSE_CLIENT;
 
     int ret = send(socket, &m, sizeof(m), 0);
     if (ret < 0) return -1;
@@ -103,7 +103,7 @@ void handle_client_command(int socket, list *connected_clients, list *disconnect
 
         // Create the subscription
         struct subscription_info *sub = malloc(sizeof(struct subscription_info));
-        strcpy(sub->topic, command.un.sub_info.topic);
+        strncpy(sub->topic, command.un.sub_info.topic, TOPIC_LENGTH);
         sub->sf = command.un.sub_info.sf;
 
         // Insert the subscription
@@ -124,6 +124,22 @@ void handle_client_command(int socket, list *connected_clients, list *disconnect
         remove_node(&client->subscriptions, sub);
     }
 
+}
+
+int send_message_to (int socket, struct message_info *msg_info) {
+    int ret = send(socket, msg_info, sizeof(*msg_info), 0);
+    if (ret < 0) return -1;
+    return 0;
+}
+
+void handle_received_message(struct message_info *msg_info, list connected_clients, list disconnected_clients) {
+    for (list p = connected_clients; p != NULL; p = p->next) {
+        struct client_info *client = p->info;
+        if (client_subscribed_to(client, msg_info->msg.topic)) {
+            int ret = send_message_to(client->socket, msg_info);
+            DIE(ret < 0, "send_message_to");
+        }
+    }
 }
 
 int main(int argc, char **argv) {
@@ -180,8 +196,10 @@ int main(int argc, char **argv) {
                     }
                 } else if (i == udp_fd) {
                     // Incoming data from udp socket
-                    struct message *msg = recieve_message(udp_fd);
-                    DIE(msg == NULL, "receive_message");
+                    struct message_info *msg_info = receive_message(udp_fd);
+                    DIE(msg_info == NULL, "receive_message");
+                    handle_received_message(msg_info, connected_clients, disconnected_clients);
+
                 } else if (i == tcp_fd) {
                     struct client_info *new_client = accept_new_client(tcp_fd);
                     DIE(new_client == NULL, "accept_new_client");

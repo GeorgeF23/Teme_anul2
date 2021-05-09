@@ -38,7 +38,7 @@ int send_subscribe_to_server(int socket, char *topic, int sf) {
     // Make the command
     struct client_command_info command;
     command.type = SUBSCRIBE;
-    strcpy(command.un.sub_info.topic, topic);
+    strncpy(command.un.sub_info.topic, topic, TOPIC_LENGTH);
     command.un.sub_info.sf = sf;
 
     // Send the command
@@ -51,7 +51,7 @@ int send_unsubscribe_to_server(int socket, char *topic) {
     // Make the command
     struct client_command_info command;
     command.type = UNSUBSCRIBE;
-    strcpy(command.un.sub_info.topic, topic);
+    strncpy(command.un.sub_info.topic, topic, TOPIC_LENGTH);
 
     // Send the command
     int ret = send(socket, &command, sizeof(command), 0);
@@ -59,6 +59,49 @@ int send_unsubscribe_to_server(int socket, char *topic) {
     return 0;
 }
 
+void print_message(struct message_info msg_info) {
+    char topic_buffer[TOPIC_LENGTH + 1];
+    memcpy(topic_buffer, msg_info.msg.topic, TOPIC_LENGTH);
+    topic_buffer[TOPIC_LENGTH] = '\0';
+    printf("%s:%d - %s - ", msg_info.source_ip, msg_info.source_port, topic_buffer);
+    
+    if (msg_info.msg.type == INT_TYPE) {
+        printf("INT - ");
+
+        if (msg_info.msg.contents.int_info.sign == 1) {
+            printf("-");
+        }
+
+        printf("%d\n", ntohl(msg_info.msg.contents.int_info.value));
+    } else if (msg_info.msg.type == SHORT_REAL_TYPE) {
+        printf("SHORT_REAL - ");
+        float value = ((float)ntohs(msg_info.msg.contents.short_real_info.value)) / 100;
+        if (value == floorf(value)) {
+            // The number does not have decimal points
+            printf ("%d\n", (int)value);
+        } else {
+            printf("%.2f\n", value);
+        }
+    } else if (msg_info.msg.type == FLOAT_TYPE) {
+        printf("FLOAT - ");
+
+        if (msg_info.msg.contents.int_info.sign == 1) {
+            printf("-");
+        }
+        float value = ((float)ntohl(msg_info.msg.contents.float_info.value)) / pow(10, msg_info.msg.contents.float_info.decimal_digits);
+        if (value == floorf(value)) {
+            // The number does not have decimal points
+            printf ("%d\n", (int)value);
+        } else {
+            printf("%.*f\n", msg_info.msg.contents.float_info.decimal_digits, value);
+        }
+    } else {
+        char buffer[CONTENT_LENGTH + 1];
+        memcpy(buffer, msg_info.msg.contents.string_info.value, CONTENT_LENGTH);
+        buffer[CONTENT_LENGTH] = '\0';
+        printf("STRING - %s\n", buffer);
+    }
+}
 
 int main(int argc, char **argv) {
     setvbuf(stdout, NULL, _IONBF, BUFSIZ);
@@ -124,7 +167,7 @@ int main(int argc, char **argv) {
                         DIE(ret < 0, "send");
                         goto end;
                     } else if (strncmp(buffer, "subscribe", 9) == 0){
-                        char topic[TOPIC_LENGTH];
+                        char topic[TOPIC_LENGTH + 1];
                         int sf;
 
                         sscanf(strchr(buffer, ' ') + 1, "%s %d", topic, &sf);
@@ -138,26 +181,28 @@ int main(int argc, char **argv) {
                         int ret = send_subscribe_to_server(tcp_socket, topic, sf);
                         DIE(ret < 0, "send_subscribe_to_server");
 
-                        printf("Subscribed to %s.\n", topic);
+                        printf("Subscribed to topic.\n");
                     } else if (strncmp(buffer, "unsubscribe", 11) == 0){
-                        char topic[TOPIC_LENGTH];
+                        char topic[TOPIC_LENGTH + 1];
 
                         sscanf(strchr(buffer, ' ') + 1, "%s", topic);
                         int ret = send_unsubscribe_to_server(tcp_socket, topic);
                         DIE(ret < 0, "send_unsubscribe_to_server");
 
-                        printf("Unsubscribed from %s.\n", topic);
+                        printf("Unsubscribed from topic.\n");
                     } else {
                         fprintf(stderr, "Invalid input!\n");
                     }
                 } else if (i == tcp_socket) {
                     // Message received from server
-                    struct message m;
-                    int ret = recv(i, &m, sizeof(m), 0);
+                    struct message_info msg_info;
+                    int ret = recv(i, &msg_info, sizeof(msg_info), 0);
                     DIE(ret < 0, "recv");
 
-                    if(m.type == CLOSE_CLIENT) {
+                    if(msg_info.msg.type == CLOSE_CLIENT) {
                         goto end;
+                    } else {
+                        print_message(msg_info);
                     }
                 }
             }

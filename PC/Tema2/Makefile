@@ -1,5 +1,6 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -g -Iinclude
+LDFLAGS = -lm
 
 SRCS = $(wildcard *.c)
 OBJS = $(patsubst %.c,%.o,$(SRCS))
@@ -11,11 +12,11 @@ build: subscriber server
 
 # make subscriber executable
 subscriber: build_objects
-	$(CC) $(CFLAGS) $(SUBSCRIBER_FILES) -o subscriber
+	$(CC) $(CFLAGS) $(SUBSCRIBER_FILES) -o subscriber $(LDFLAGS)
 
 # make server executable
 server: build_objects
-	$(CC) $(CFLAGS) $(SERVER_FILES) -o server
+	$(CC) $(CFLAGS) $(SERVER_FILES) -o server $(LDFLAGS)
 
 # build objects
 build_objects: $(OBJS)

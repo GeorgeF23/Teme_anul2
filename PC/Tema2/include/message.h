@@ -4,7 +4,9 @@
 
 #include <stdint.h>
 #include <string.h>
+#include <netinet/in.h>
 
+#define MESSAGE_LENGTH 1600
 #define CONTENT_LENGTH 1500
 #define TOPIC_LENGTH 50
 
@@ -15,9 +17,10 @@
 #define CLOSE_CLIENT 4  // Special message type to tell the client to terminate
 
 struct subscription_info {
-    char topic[CONTENT_LENGTH];
+    char topic[TOPIC_LENGTH];
     int sf;
 };
+
 
 struct message {
     char topic[TOPIC_LENGTH];
@@ -46,6 +49,12 @@ struct message {
 
 };
 
+struct message_info {
+    char source_ip[INET_ADDRSTRLEN];
+    uint16_t source_port;
+    struct message msg;
+};
+
 /**
  * @brief  Checks if a subscription has a specific topic
  * @note   This function is used to search for a specific subscription in a generic linked list
@@ -54,5 +63,4 @@ struct message {
  * @retval 1 if true / 0 if false
  */
 int subscription_has_topic(void *subscription, void *topic);
-
 #endif

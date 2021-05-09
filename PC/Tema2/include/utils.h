@@ -13,7 +13,5 @@
 			exit(EXIT_FAILURE);				\
 		}							\
 	} while(0)
-	
-#define MESSAGE_LENGTH 1600
 
 #endif

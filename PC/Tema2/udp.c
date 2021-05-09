@@ -21,11 +21,16 @@ int init_udp_listener(int port) {
     return sock;
 }
 
-struct message *recieve_message(int socket) {
-    struct message *msg = malloc(sizeof(struct message));
+struct message_info *receive_message(int socket) {
+    struct message_info *msg_info = malloc(sizeof(struct message_info));
+    struct sockaddr_in udp_info;
+    socklen_t len = sizeof(udp_info);
 
-    ssize_t count = recvfrom(socket, msg, MESSAGE_LENGTH, 0, NULL, NULL);
+    ssize_t count = recvfrom(socket, &msg_info->msg, MESSAGE_LENGTH, 0, (struct sockaddr *)&udp_info, &len);
     if (count == -1) return NULL;
 
-    return msg;
+    strcpy(msg_info->source_ip, inet_ntoa(udp_info.sin_addr));
+    msg_info->source_port = htons(udp_info.sin_port);
+
+    return msg_info;
 }

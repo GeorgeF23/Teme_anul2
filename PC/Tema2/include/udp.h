@@ -4,6 +4,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 #include <netdb.h>
 #include <string.h>
 
@@ -22,8 +24,8 @@ int init_udp_listener(int port);
  * @brief  Reads a message from an UDP socket
  * @note   
  * @param  socket: udp socket to read from
- * @retval the message that has been read / NULL on error
+ * @retval the message and sender info / NULL on error
  */
-struct message *recieve_message(int socket);
+struct message_info *receive_message(int socket);
 
 #endif
