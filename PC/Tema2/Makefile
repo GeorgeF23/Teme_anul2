@@ -4,8 +4,8 @@ CFLAGS = -Wall -Wextra -g -Iinclude
 SRCS = $(wildcard *.c)
 OBJS = $(patsubst %.c,%.o,$(SRCS))
 
-SERVER_FILES = server.o tcp.o udp.o list.o client.o
-SUBSCRIBER_FILES = subscriber.o list.o client.o
+SERVER_FILES = server.o tcp.o udp.o list.o client.o message.o
+SUBSCRIBER_FILES = subscriber.o list.o client.o message.o
 
 build: subscriber server
 

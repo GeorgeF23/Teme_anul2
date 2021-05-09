@@ -38,10 +38,12 @@ void remove_node(list *l, void *info) {
         // First element in list matches
         *l = (*l)->next;
     } else {
-        for (list p = *l; p ->next != NULL; p = p->next) {
+        list ant = (*l);
+        for (list p = (*l)->next; p != NULL; p = p->next) {
             if (p->info == info) {
-                p->next = p->next->next;
+                ant->next = p->next;
             }
+            ant = p;
         }
     }
 }

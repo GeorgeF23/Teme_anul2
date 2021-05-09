@@ -28,12 +28,36 @@ int send_id_to_server(int socket, char *id) {
     command.type = SEND_ID;
     strcpy(command.un.id, id);
 
+    // Send the command
     int ret = send(socket, &command, sizeof(command), 0);
     if (ret < 0) return -1;
     return 0;
 }
 
+int send_subscribe_to_server(int socket, char *topic, int sf) {
+    // Make the command
+    struct client_command_info command;
+    command.type = SUBSCRIBE;
+    strcpy(command.un.sub_info.topic, topic);
+    command.un.sub_info.sf = sf;
 
+    // Send the command
+    int ret = send(socket, &command, sizeof(command), 0);
+    if (ret < 0) return -1;
+    return 0;
+}
+
+int send_unsubscribe_to_server(int socket, char *topic) {
+    // Make the command
+    struct client_command_info command;
+    command.type = UNSUBSCRIBE;
+    strcpy(command.un.sub_info.topic, topic);
+
+    // Send the command
+    int ret = send(socket, &command, sizeof(command), 0);
+    if (ret < 0) return -1;
+    return 0;
+}
 
 
 int main(int argc, char **argv) {
@@ -99,6 +123,26 @@ int main(int argc, char **argv) {
                         int ret = send(tcp_socket, &command, sizeof(command), 0);
                         DIE(ret < 0, "send");
                         goto end;
+                    } else if (strncmp(buffer, "subscribe", 9) == 0){
+                        char topic[TOPIC_LENGTH];
+                        int sf;
+
+                        sscanf(strchr(buffer, ' ') + 1, "%s %d", topic, &sf);
+
+                        // Check if sf is valid
+                        if (!(sf == 0 || sf == 1)) {
+                            fprintf(stderr, "Invalid SF!\n");
+                            continue;
+                        }
+
+                        int ret = send_subscribe_to_server(tcp_socket, topic, sf);
+                        DIE(ret < 0, "send_subscribe_to_server");
+                    } else if (strncmp(buffer, "unsubscribe", 11) == 0){
+                        char topic[TOPIC_LENGTH];
+
+                        sscanf(strchr(buffer, ' ') + 1, "%s", topic);
+                        int ret = send_unsubscribe_to_server(tcp_socket, topic);
+                        DIE(ret < 0, "send_unsubscribe_to_server");
                     } else {
                         fprintf(stderr, "Invalid input!\n");
                     }

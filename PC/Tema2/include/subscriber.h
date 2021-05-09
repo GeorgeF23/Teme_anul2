@@ -35,6 +35,23 @@ int connect_to_server(uint32_t server_ip, uint16_t server_port);
  */
 int send_id_to_server(int socket, char *id);
 
+/**
+ * @brief  Send a subscribe command to the server
+ * @note   
+ * @param  socket: the socket to send the command to
+ * @param  *topic: the topic to subscribe to
+ * @param  sf: sf parameter
+ * @retval 0 on success / -1 on error
+ */
+int send_subscribe_to_server(int socket, char *topic, int sf);
 
+/**
+ * @brief  Send an unsubscribe command to the server
+ * @note   
+ * @param  socket: the socket to send the command to
+ * @param  *topic: the topic to unsubscribe from
+ * @retval 0 on success / -1 on error
+ */
+int send_unsubscribe_to_server(int socket, char *topic);
 
 #endif

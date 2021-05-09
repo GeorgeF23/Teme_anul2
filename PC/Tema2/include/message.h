@@ -2,6 +2,9 @@
 #define _MESSAGE_H 1
 #pragma pack(1)
 
+#include <stdint.h>
+#include <string.h>
+
 #define CONTENT_LENGTH 1500
 #define TOPIC_LENGTH 50
 
@@ -13,7 +16,7 @@
 
 struct subscription_info {
     char topic[CONTENT_LENGTH];
-    uint8_t sf;
+    int sf;
 };
 
 struct message {
@@ -42,5 +45,14 @@ struct message {
     } contents;
 
 };
+
+/**
+ * @brief  Checks if a subscription has a specific topic
+ * @note   This function is used to search for a specific subscription in a generic linked list
+ * @param  *subscription: pointer to the subscription
+ * @param  *topic: the topic we search for
+ * @retval 1 if true / 0 if false
+ */
+int subscription_has_topic(void *subscription, void *topic);
 
 #endif

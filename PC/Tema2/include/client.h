@@ -62,4 +62,21 @@ int client_has_socket(void *client, void *socket);
  */
 int client_has_id(void *client, void *id);
 
+/**
+ * @brief  Checks if a client is subscribed to a specific topic
+ * @note   
+ * @param  *client: pointer to client_info
+ * @param  *topic: the topic we check
+ * @retval 1 if true / 0 if false
+ */
+int client_subscribed_to(struct client_info *client, char *topic);
+
+/**
+ * @brief  Checks if a client has a SF subscription to a specific topic
+ * @note   
+ * @param  *client: pointer to client_info
+ * @param  *topic: the topic we check
+ * @retval sf value / -1 if not subscribed
+ */
+int client_sf_to(struct client_info *client, char *topic);
 #endif

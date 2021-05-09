@@ -79,6 +79,7 @@ void handle_client_command(int socket, list *connected_clients, list *disconnect
 
                 // Remove the client from disconnected_clients
                 remove_node(disconnected_clients, old_client);
+                free(old_client);
             }
         }
     } else if (command.type == EXIT) {
@@ -95,7 +96,34 @@ void handle_client_command(int socket, list *connected_clients, list *disconnect
         DIE(ret < 0, "close");
 
         FD_CLR(socket, read_fds);
+    } else if (command.type == SUBSCRIBE) {
+        // Get the client
+        struct client_info *client = search(*connected_clients, &socket, client_has_socket);
+        DIE(client == NULL, "subscribe");
+
+        // Create the subscription
+        struct subscription_info *sub = malloc(sizeof(struct subscription_info));
+        strcpy(sub->topic, command.un.sub_info.topic);
+        sub->sf = command.un.sub_info.sf;
+
+        // Insert the subscription
+        insert(&client->subscriptions, sub);
+    } else if (command.type == UNSUBSCRIBE) {
+        // Get the client
+        struct client_info *client = search(*connected_clients, &socket, client_has_socket);
+        DIE(client == NULL, "unsubscribe");
+
+        // Search for the subscription
+        struct subscription_info *sub = search(client->subscriptions, command.un.sub_info.topic, subscription_has_topic);
+        if (sub == NULL) {
+            fprintf(stderr, "Subscription does not exist!\n");
+            return;
+        }
+
+        // Remove the subscription
+        remove_node(&client->subscriptions, sub);
     }
+
 }
 
 int main(int argc, char **argv) {
