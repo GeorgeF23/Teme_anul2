@@ -137,12 +137,16 @@ int main(int argc, char **argv) {
 
                         int ret = send_subscribe_to_server(tcp_socket, topic, sf);
                         DIE(ret < 0, "send_subscribe_to_server");
+
+                        printf("Subscribed to %s.\n", topic);
                     } else if (strncmp(buffer, "unsubscribe", 11) == 0){
                         char topic[TOPIC_LENGTH];
 
                         sscanf(strchr(buffer, ' ') + 1, "%s", topic);
                         int ret = send_unsubscribe_to_server(tcp_socket, topic);
                         DIE(ret < 0, "send_unsubscribe_to_server");
+
+                        printf("Unsubscribed from %s.\n", topic);
                     } else {
                         fprintf(stderr, "Invalid input!\n");
                     }
