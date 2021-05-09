@@ -69,6 +69,17 @@ void handle_client_command(int socket, list *connected_clients, list *disconnect
             strcpy(client_by_socket->id, command.un.id);
             char *ip = inet_ntoa((struct in_addr){client_by_socket->socket_info.sin_addr.s_addr});
             printf("New client %s connected from %s:%d\n", client_by_socket->id, ip, client_by_socket->socket_info.sin_port);
+
+            // Check if the client had already connected once in the past
+            struct client_info *old_client = search(*disconnected_clients, command.un.id, client_has_id);
+            if (old_client != NULL) {
+                // Copy the socket information from the old entry to the new one
+                client_by_socket->subscriptions = old_client->subscriptions;
+                client_by_socket->sf_messages = old_client->sf_messages;
+
+                // Remove the client from disconnected_clients
+                remove_node(disconnected_clients, old_client);
+            }
         }
     } else if (command.type == EXIT) {
         // Clients wants to close the connection.
@@ -143,8 +154,6 @@ int main(int argc, char **argv) {
                     // Incoming data from udp socket
                     struct message *msg = recieve_message(udp_fd);
                     DIE(msg == NULL, "receive_message");
-
-                    printf ("Primit mesaj: %s\n", msg->topic);
                 } else if (i == tcp_fd) {
                     struct client_info *new_client = accept_new_client(tcp_fd);
                     DIE(new_client == NULL, "accept_new_client");
@@ -163,6 +172,10 @@ int main(int argc, char **argv) {
     }
 
 end:
+    for (list p = connected_clients; p != NULL; p = p->next) {
+        struct client_info *client = p->info;
+        send_close_message(client->socket, &read_fds);
+    }
     close(udp_fd);
     return 0;
 }
