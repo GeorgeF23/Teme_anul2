@@ -40,6 +40,24 @@ int send_close_message(int socket, fd_set *read_fds) {
     return 0;
 }
 
+int send_message_to (int socket, struct message_info *msg_info) {
+    int ret = send(socket, msg_info, sizeof(*msg_info), 0);
+    if (ret < 0) return -1;
+    return 0;
+}
+
+
+int handle_sf_messages(struct client_info *client) {
+    for (list p = client->sf_messages; p != NULL; p = p->next) {
+        struct message_info *msg_info = p->info;
+        int ret = send_message_to(client->socket, msg_info);
+        if (ret == -1) return -1;
+
+        remove_node(&client->sf_messages, msg_info);
+    }
+    return 0;
+}
+
 /**
  * @brief  Handles commands received from clients
  * @note   
@@ -80,6 +98,9 @@ void handle_client_command(int socket, list *connected_clients, list *disconnect
                 // Remove the client from disconnected_clients
                 remove_node(disconnected_clients, old_client);
                 free(old_client);
+
+                int ret = handle_sf_messages(client_by_socket);
+                DIE(ret == -1, "handle_sf_messages");
             }
         }
     } else if (command.type == EXIT) {
@@ -107,7 +128,8 @@ void handle_client_command(int socket, list *connected_clients, list *disconnect
         sub->sf = command.un.sub_info.sf;
 
         // Insert the subscription
-        insert(&client->subscriptions, sub);
+        int ret = insert(&client->subscriptions, sub);
+        DIE(ret == 0, "insert");
     } else if (command.type == UNSUBSCRIBE) {
         // Get the client
         struct client_info *client = search(*connected_clients, &socket, client_has_socket);
@@ -126,18 +148,25 @@ void handle_client_command(int socket, list *connected_clients, list *disconnect
 
 }
 
-int send_message_to (int socket, struct message_info *msg_info) {
-    int ret = send(socket, msg_info, sizeof(*msg_info), 0);
-    if (ret < 0) return -1;
-    return 0;
-}
 
 void handle_received_message(struct message_info *msg_info, list connected_clients, list disconnected_clients) {
+    // Send message to connected clients
     for (list p = connected_clients; p != NULL; p = p->next) {
         struct client_info *client = p->info;
         if (client_subscribed_to(client, msg_info->msg.topic)) {
             int ret = send_message_to(client->socket, msg_info);
             DIE(ret < 0, "send_message_to");
+        }
+    }
+
+    // Add message to disconnected clients with sf
+    for (list p = disconnected_clients; p != NULL; p = p->next) {
+        struct client_info *client = p->info;
+        if (client_subscribed_to(client, msg_info->msg.topic)) {
+            if (client_sf_to(client, msg_info->msg.topic) == 1) {
+                int ret = insert(&client->sf_messages, msg_info);
+                DIE(ret == 0, "insert");
+            }
         }
     }
 }
