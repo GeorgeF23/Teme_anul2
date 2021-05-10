@@ -7,6 +7,7 @@
 
 module Tasks where
 
+import Data.Maybe
 import Data.List
 
 import Dataset
@@ -57,16 +58,16 @@ get_passed_hw_num = length . filter (>= 1.5) . map (sum . map string_to_float . 
 
 -- Task 3
 get_avg_responses_per_qs :: Table -> Table
-get_avg_responses_per_qs grades = ["Q1","Q2","Q3","Q4","Q5","Q6"] : 
-    [map (float_to_string . (/ (fromIntegral $ length $ tail grades))) 
+get_avg_responses_per_qs grades = ["Q1","Q2","Q3","Q4","Q5","Q6"] :
+    [map (float_to_string . (/ (fromIntegral $ length $ tail grades)))
         (foldl (zipWith (+)) [0.0, 0.0, 0.0, 0.0, 0.0, 0.0] $ map( map string_to_float . take 6 . tail) $ tail grades)]
 
 -- Task 4
 get_exam_summary :: Table -> Table
-get_exam_summary = construct_table . 
+get_exam_summary = construct_table .
     -- foldl-ul are ca acumulator o lista de lista in care sunt tinute punctajele de la fiecare intrebare
     -- zipWith-ul executa functia 'increment_question_numbers' intre fiecare punctaj al fiecarei intrebari si lista din acumulator corespunzatoare intrebarii
-    foldl (zipWith increment_question_numbers) [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]] . 
+    foldl (zipWith increment_question_numbers) [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]] .
     map( map string_to_integer . take 6 . tail) .   -- extrage doar punctajele intrbarilor de la examenul interviu
     tail
     where
@@ -76,7 +77,7 @@ get_exam_summary = construct_table .
             acc                     lista de 3 elemente unde sunt contorizate punctajele unei intrebari
             question_points         punctajul obtinut la intrebare
         -}
-        
+
         increment_question_numbers :: [Integer] -> Integer -> [Integer]
         increment_question_numbers acc question_points
             | question_points == 0 = increment_field 0 acc
@@ -100,10 +101,10 @@ get_ranking = (["Nume","Punctaj Exam"] :) . sortBy cmp . tail . compute_exam_gra
 
 -- Task 6
 get_exam_diff_table :: Table -> Table
-get_exam_diff_table = (["Nume","Punctaj interviu","Punctaj scris","Diferenta"] :) . 
-    sortBy cmp . 
-    map ((\line -> line ++ [float_to_string $ abs (string_to_float (line !! 1) - string_to_float (line !! 2))]) . 
-        (\line -> head line : float_to_string (compute_one_interview_exam_grade $ tail line) : [float_to_string $ string_to_float (line !! 7)])) . 
+get_exam_diff_table = (["Nume","Punctaj interviu","Punctaj scris","Diferenta"] :) .
+    sortBy cmp .
+    map ((\line -> line ++ [float_to_string $ abs (string_to_float (line !! 1) - string_to_float (line !! 2))]) .
+        (\line -> head line : float_to_string (compute_one_interview_exam_grade $ tail line) : [float_to_string $ string_to_float (line !! 7)])) .
     tail
     where
         cmp :: Row -> Row -> Ordering
@@ -111,3 +112,91 @@ get_exam_diff_table = (["Nume","Punctaj interviu","Punctaj scris","Diferenta"] :
             | entry1 !! 3 < entry2 !! 3 = LT
             | entry1 !! 3 == entry2 !! 3 = if head entry1 < head entry2 then LT else GT
             | otherwise = GT
+
+
+{-
+	TASK SET 2
+-}
+
+read_csv :: CSV -> Table
+read_csv = map (splitOn ',') . splitOn '\n'
+
+write_csv :: Table -> CSV
+write_csv = tail . concatMap ((++) "\n" . tail . foldr (\el acc -> "," ++ el ++ acc) "")
+
+-- Task 1
+as_list :: String -> Table -> [String]
+as_list column table = tail $ map (\row -> row !! get_element_index column (head table)) table
+
+-- Task 2
+tsort :: String -> Table -> Table
+tsort column table = head table : sortBy cmp (tail table)
+    where
+        cmp :: Row -> Row -> Ordering
+        cmp row1 row2
+            | row1 !! get_element_index column (head table) > row2 !! get_element_index column (head table) = GT
+            | row1 !! get_element_index column (head table) < row2 !! get_element_index column (head table) = LT
+            | otherwise = if head row1 > head row2 then GT else LT
+
+-- Task 3
+vmap :: (Value -> Value) -> Table -> Table
+vmap op = map (map op)
+
+-- Task 4
+rmap :: (Row -> Row) -> [String] -> Table -> Table
+rmap op new_columns = (:) new_columns . map op . tail
+
+get_hw_grade_total :: Row -> Row
+get_hw_grade_total row = [head row, float_to_string $ sum $ map string_to_float $ tail $ tail row]
+
+-- Task 5
+vunion :: Table -> Table -> Table
+vunion table1 table2 = if head table1 == head table2 then table1 ++ tail table2 else table1
+
+-- Task 6
+hunion :: Table -> Table -> Table
+hunion table1 table2 = if length table1 > length table2 then
+                            zipWith (++) table1 (extend_tables table1 table2) else
+                            zipWith (++) (extend_tables table2 table1) table2
+    where
+        -- If a table has less rows than the other one, add rows with empty strings to it
+        extend_tables :: Table -> Table -> Table
+        extend_tables big_table small_table = small_table ++ replicate (length big_table - length small_table) (replicate (length $ head small_table) "")
+
+-- Task 7
+tjoin :: String -> Table -> Table -> Table
+tjoin column table1 table2 = map join table1
+    where
+        -- If there is a matching row in the second table, append it to row1 else add empty string to row1
+        join :: Row -> Row
+        join row1 = if null (get_matching_row row1 table2) then 
+            extend_row (length (head table2) - 1) row1 else 
+            row1 ++ remove_element_at_index (get_element_index column (head table2)) (get_matching_row row1 table2)
+
+        -- Returns the matching row in the second table or empty list if not found
+        get_matching_row :: Row -> Table -> Row
+        get_matching_row row1 table2 = if not (any (matching_rows row1) table2) then [] else head $ filter (matching_rows row1) table2
+
+        -- Checks if two rows have the same key value
+        matching_rows :: Row -> Row -> Bool
+        matching_rows row1 row2 = row1 !! get_element_index column (head table1) == row2 !! get_element_index column (head table2)
+
+        -- Creates a list of empty strings
+        extend_row :: Int -> Row -> Row
+        extend_row additional_values row = row ++ replicate additional_values ""
+
+-- Task 8
+cartesian :: (Row -> Row -> Row) -> [String] -> Table -> Table -> Table
+cartesian op columns table1 table2 = columns : aux op (tail table1) (tail table2)
+    where
+        aux :: (Row -> Row -> Row) -> Table -> Table -> Table
+        aux op [] _ = []
+        aux op (x:xs) [] = aux op xs (tail table2)
+        aux op (x:xs) (y:ys) = if null (op x y) then aux op (x:xs) ys else op x y : aux op (x:xs) ys
+
+-- Task 9
+projection :: [String] -> Table -> Table
+projection columns table = map extract_columns table
+    where
+        extract_columns :: Row -> Row
+        extract_columns row = map (\column -> row !! get_element_index column (head table)) columns
