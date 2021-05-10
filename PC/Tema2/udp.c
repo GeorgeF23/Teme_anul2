@@ -26,9 +26,11 @@ struct message_info *receive_message(int socket) {
     struct sockaddr_in udp_info;
     socklen_t len = sizeof(udp_info);
 
+    // Receive the message
     ssize_t count = recvfrom(socket, &msg_info->msg, sizeof(msg_info->msg), 0, (struct sockaddr *)&udp_info, &len);
     if (count == -1) return NULL;
 
+    // Store the ip and port of source
     strcpy(msg_info->source_ip, inet_ntoa(udp_info.sin_addr));
     msg_info->source_port = htons(udp_info.sin_port);
 

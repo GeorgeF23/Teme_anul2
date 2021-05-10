@@ -30,6 +30,7 @@ struct client_info *accept_new_client(int fd) {
 
     client->socket_info_len = sizeof(struct sockaddr_in);
 
+    // Accept the new connection
     int client_socket = accept(fd, (struct sockaddr *) &client->socket_info, &client->socket_info_len);
     if (client_socket < 0) return NULL;
 
@@ -38,6 +39,7 @@ struct client_info *accept_new_client(int fd) {
     int result = setsockopt(client_socket, IPPROTO_TCP, TCP_NODELAY, (char *) &flag,  sizeof(int));
     if (result < 0) return NULL;
 
+    // Fill the data into the client_info structure
     client->socket = client_socket;
     memset(client->id, 0, MAX_CLIENT_ID_LEN);
     client->subscriptions = NULL;

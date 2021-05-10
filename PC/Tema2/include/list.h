@@ -48,4 +48,12 @@ void *search(list l, void *other, equals eq);
  * @retval None
  */
 void remove_node(list *l, void *info);
+
+/**
+ * @brief  Frees the memory allocated for a list
+ * @note   
+ * @param  *l: the list
+ * @retval None
+ */
+void free_list(list l);
 #endif

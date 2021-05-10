@@ -60,9 +60,11 @@ int send_unsubscribe_to_server(int socket, char *topic) {
 }
 
 void print_message(struct message_info msg_info) {
+    // Add string terminator to the topic
     char topic_buffer[TOPIC_LENGTH + 1];
     memcpy(topic_buffer, msg_info.msg.topic, TOPIC_LENGTH);
     topic_buffer[TOPIC_LENGTH] = '\0';
+
     printf("%s:%d - %s - ", msg_info.source_ip, msg_info.source_port, topic_buffer);
     
     if (msg_info.msg.type == INT_TYPE) {
@@ -96,9 +98,11 @@ void print_message(struct message_info msg_info) {
             printf("%.*f\n", msg_info.msg.contents.float_info.decimal_digits, value);
         }
     } else {
+        // Add string terminator to the content
         char buffer[CONTENT_LENGTH + 1];
         memcpy(buffer, msg_info.msg.contents.string_info.value, CONTENT_LENGTH);
         buffer[CONTENT_LENGTH] = '\0';
+
         printf("STRING - %s\n", buffer);
     }
 }
@@ -133,12 +137,11 @@ int main(int argc, char **argv) {
     FD_ZERO(&read_fds);
     FD_ZERO(&tmp_fds);
 
-
+    // Connect to the server
     int tcp_socket = connect_to_server(server_ip, server_port);
     DIE(tcp_socket < 0, "connect_to_server");
 
     fdmax = tcp_socket;
-
     FD_SET(STDIN_FILENO, &read_fds); // Add stdin into set
     FD_SET(tcp_socket, &read_fds);  // Add the tcp socket into set
 
@@ -155,6 +158,7 @@ int main(int argc, char **argv) {
         for (int i = 0; i <= fdmax; i++) {
             if (FD_ISSET(i, &tmp_fds)) {
                 if (i == STDIN_FILENO) {
+                    // Input from stdin
                     char buffer[100];
                     DIE(fgets(buffer, sizeof(buffer), stdin) == NULL, "fgets");
 
@@ -168,7 +172,7 @@ int main(int argc, char **argv) {
                         goto end;
                     } else if (strncmp(buffer, "subscribe", 9) == 0){
                         char topic[TOPIC_LENGTH + 1];
-                        int sf;
+                        int sf = 0;
 
                         sscanf(strchr(buffer, ' ') + 1, "%s %d", topic, &sf);
 

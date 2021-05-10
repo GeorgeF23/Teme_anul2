@@ -16,12 +16,13 @@
 #define STRING_TYPE 3
 #define CLOSE_CLIENT 4  // Special message type to tell the client to terminate
 
+/* Hold the information about a client's subscription */
 struct subscription_info {
     char topic[TOPIC_LENGTH];
     int sf;
 };
 
-
+/* Hold the information of a message */
 struct message {
     char topic[TOPIC_LENGTH];
     unsigned int type:8;
@@ -49,6 +50,7 @@ struct message {
 
 };
 
+/* Hold additional information along the message */
 struct message_info {
     char source_ip[INET_ADDRSTRLEN];
     uint16_t source_port;

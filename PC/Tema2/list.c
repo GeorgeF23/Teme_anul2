@@ -47,3 +47,11 @@ void remove_node(list *l, void *info) {
         }
     }
 }
+
+void free_list(list l) {
+    if (l == NULL) return;
+    
+    list aux = l->next;
+    free(l);
+    free_list(aux);
+}

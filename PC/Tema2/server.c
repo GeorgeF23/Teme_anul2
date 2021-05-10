@@ -1,31 +1,5 @@
-#include <fcntl.h>
-#include <unistd.h>
-#include <netinet/in.h>
-#include <netdb.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/socket.h>
-#include <string.h>
-#include <math.h>
+#include "server.h"
 
-#include "utils.h"
-#include "message.h"
-
-#include "udp.h"
-#include "tcp.h"
-#include "subscriber.h"
-#include "client.h"
-#include "list.h"
-
-/**
- * @brief  Sends a message to a subscriber telling him to shut down
- * @note   
- * @param  socket: the socket to send the message
- * @param  *read_fds: the set of descriptors
- * @retval 0 on success / -1 on error
- */
 int send_close_message(int socket, fd_set *read_fds) {
     struct message_info m;
     m.msg.type = CLOSE_CLIENT;
@@ -40,7 +14,7 @@ int send_close_message(int socket, fd_set *read_fds) {
     return 0;
 }
 
-int send_message_to (int socket, struct message_info *msg_info) {
+int send_message_to(int socket, struct message_info *msg_info) {
     int ret = send(socket, msg_info, sizeof(*msg_info), 0);
     if (ret < 0) return -1;
     return 0;
@@ -48,25 +22,19 @@ int send_message_to (int socket, struct message_info *msg_info) {
 
 
 int handle_sf_messages(struct client_info *client) {
+    // Go through all the stored messages and forward them to the client
+
     for (list p = client->sf_messages; p != NULL; p = p->next) {
         struct message_info *msg_info = p->info;
         int ret = send_message_to(client->socket, msg_info);
         if (ret == -1) return -1;
 
         remove_node(&client->sf_messages, msg_info);
+        free(msg_info);
     }
     return 0;
 }
 
-/**
- * @brief  Handles commands received from clients
- * @note   
- * @param  socket: the socket where the command came from
- * @param  *connected_clients: list of connected clients
- * @param  *disconnected_clients: list of disconnected clients
- * @param  *read_fds: set of descriptors
- * @retval None
- */
 void handle_client_command(int socket, list *connected_clients, list *disconnected_clients, fd_set *read_fds) {
     // Initialize and receive the command
     struct client_command_info command;
@@ -77,7 +45,7 @@ void handle_client_command(int socket, list *connected_clients, list *disconnect
     if (command.type == SEND_ID) {
         // Client sends an id
 
-        // Check if a client already has that id.
+        // Check if a client with that id is already connected
         struct client_info *client_by_id = search(*connected_clients, command.un.id, client_has_id);
         if (client_by_id != NULL) {
             printf("Client %s already connected.\n", command.un.id);
@@ -99,6 +67,7 @@ void handle_client_command(int socket, list *connected_clients, list *disconnect
                 remove_node(disconnected_clients, old_client);
                 free(old_client);
 
+                // Send the stored messages, if any
                 int ret = handle_sf_messages(client_by_socket);
                 DIE(ret == -1, "handle_sf_messages");
             }
@@ -109,14 +78,18 @@ void handle_client_command(int socket, list *connected_clients, list *disconnect
         struct client_info *client = search(*connected_clients, &socket, client_has_socket);
         printf("Client %s disconnected.\n", client->id);
 
+        // Remove the client from the connected clients list
         remove_node(connected_clients, client);
         
+        // Add the client tot the disconnected clients list
         int ret = insert(disconnected_clients, client);
         DIE(ret == 0, "insert");
 
+        // Close the socket
         ret = close(socket); 
         DIE(ret < 0, "close");
 
+        // Remove the socket from the descriptors set
         FD_CLR(socket, read_fds);
     } else if (command.type == SUBSCRIBE) {
         // Get the client
@@ -127,7 +100,6 @@ void handle_client_command(int socket, list *connected_clients, list *disconnect
         struct subscription_info *sub = malloc(sizeof(struct subscription_info));
         strncpy(sub->topic, command.un.sub_info.topic, TOPIC_LENGTH);
         sub->sf = command.un.sub_info.sf;
-
 
         // Insert the subscription
         int ret = insert(&client->subscriptions, sub);
@@ -147,9 +119,7 @@ void handle_client_command(int socket, list *connected_clients, list *disconnect
         // Remove the subscription
         remove_node(&client->subscriptions, sub);
     }
-
 }
-
 
 void handle_received_message(struct message_info *msg_info, list connected_clients, list disconnected_clients) {
     // Send message to connected clients
@@ -193,6 +163,7 @@ int main(int argc, char **argv) {
     FD_ZERO(&read_fds);
     FD_ZERO(&tmp_fds);
 
+    // Initialize udp and tcp sockets
     int udp_fd = init_udp_listener(port);
     DIE(udp_fd == -1, "init_udp_listener");
 
@@ -232,12 +203,15 @@ int main(int argc, char **argv) {
                     handle_received_message(msg_info, connected_clients, disconnected_clients);
 
                 } else if (i == tcp_fd) {
+                    // Accept new connection
                     struct client_info *new_client = accept_new_client(tcp_fd);
                     DIE(new_client == NULL, "accept_new_client");
 
+                    // Insert the client into the list
                     int ret = insert(&connected_clients, new_client);
                     DIE(ret == 0, "insert");
 
+                    // Update descriptor set
                     if (new_client->socket > fdmax) fdmax = new_client->socket;
                     FD_SET(new_client->socket, &read_fds);
                 } else {
@@ -249,10 +223,16 @@ int main(int argc, char **argv) {
     }
 
 end:
+    // Close the server
     for (list p = connected_clients; p != NULL; p = p->next) {
         struct client_info *client = p->info;
         send_close_message(client->socket, &read_fds);
+
+        free_list(client->subscriptions);
+        free_list(client->sf_messages);
+        free(client);
     }
     close(udp_fd);
+    close(tcp_fd);
     return 0;
 }
