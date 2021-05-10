@@ -40,6 +40,8 @@ struct client_info *accept_new_client(int fd) {
 
     client->socket = client_socket;
     memset(client->id, 0, MAX_CLIENT_ID_LEN);
+    client->subscriptions = NULL;
+    client->sf_messages = NULL;
 
     return client;
 }

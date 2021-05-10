@@ -103,13 +103,14 @@ void handle_client_command(int socket, list *connected_clients, list *disconnect
                 DIE(ret == -1, "handle_sf_messages");
             }
         }
+    
     } else if (command.type == EXIT) {
         // Clients wants to close the connection.
         struct client_info *client = search(*connected_clients, &socket, client_has_socket);
         printf("Client %s disconnected.\n", client->id);
 
         remove_node(connected_clients, client);
-
+        
         int ret = insert(disconnected_clients, client);
         DIE(ret == 0, "insert");
 
@@ -126,6 +127,7 @@ void handle_client_command(int socket, list *connected_clients, list *disconnect
         struct subscription_info *sub = malloc(sizeof(struct subscription_info));
         strncpy(sub->topic, command.un.sub_info.topic, TOPIC_LENGTH);
         sub->sf = command.un.sub_info.sf;
+
 
         // Insert the subscription
         int ret = insert(&client->subscriptions, sub);
@@ -217,7 +219,7 @@ int main(int argc, char **argv) {
                 if (i == STDIN_FILENO) {
                     // Incoming data from stdin
                     char buffer[16];
-                    fgets(buffer, sizeof(buffer), stdin);
+                    DIE(fgets(buffer, sizeof(buffer), stdin) == NULL, "fgets");
                     if (strncmp(buffer, "exit", 4) == 0) {
                         goto end;
                     } else {

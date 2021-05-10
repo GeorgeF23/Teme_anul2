@@ -156,7 +156,7 @@ int main(int argc, char **argv) {
             if (FD_ISSET(i, &tmp_fds)) {
                 if (i == STDIN_FILENO) {
                     char buffer[100];
-                    fgets(buffer, sizeof(buffer), stdin);
+                    DIE(fgets(buffer, sizeof(buffer), stdin) == NULL, "fgets");
 
                     if (strncmp(buffer, "exit", 4) == 0) {
                         // Tell the server to close the socket
