@@ -53,17 +53,17 @@ run_subtest 2 8 2 = write_csv $ cartesian names_only test_schema2 (take 5 $ read
 run_subtest 2 9 1 = write_csv $ projection ["Nume", "Lab (1p)"] $ read_csv hw_grades_csv
 run_subtest 2 9 2 = write_csv $ projection ["Nume","Lab (1p)","T1 (0.5p)","T2 (1p)","T3 (1.5p)"] $ read_csv hw_grades_csv
 
--- run_subtest 3 1 1 = show $ eval $ FromCSV exam_grades_csv
--- run_subtest 3 1 2 = show $ eval $ ToCSV $ FromCSV $ lecture_grades_csv
--- run_subtest 3 1 3 = show $ eval $ AsList "Nume" $ FromCSV hw_grades_csv
--- run_subtest 3 1 4 = show $ eval $ Sort "Lab (1p)" $ FromCSV hw_grades_csv
--- run_subtest 3 1 5 = show $ eval $ ValueMap (\x -> if x == "" then "0" else x) $ FromCSV exam_grades_csv
--- run_subtest 3 1 6 = show $ eval $ RowMap get_hw_grade_total ["Nume", "Total teme"] $ FromCSV hw_grades_csv
--- run_subtest 3 1 7 = show $ eval $ VUnion (FromCSV hw_grades_csv) (FromCSV hw_grades_csv)
--- run_subtest 3 1 8 = show $ eval $ HUnion (FromCSV hw_grades_csv) (FromCSV exam_grades_csv)
--- run_subtest 3 1 9 = show $ eval $ TableJoin "Nume" (FromCSV hw_grades_csv) (FromCSV exam_grades_csv)
--- run_subtest 3 1 10 = show $ eval $ Cartesian names_only test_schema2 (FromCSV hw_grades_csv) (FromCSV exam_grades_csv)
--- run_subtest 3 1 11 = show $ eval $ Projection ["Nume", "Lab (1p)"] $ FromCSV hw_grades_csv
+run_subtest 3 1 1 = show $ eval $ FromCSV exam_grades_csv
+run_subtest 3 1 2 = show $ eval $ ToCSV $ FromCSV $ lecture_grades_csv
+run_subtest 3 1 3 = show $ eval $ AsList "Nume" $ FromCSV hw_grades_csv
+run_subtest 3 1 4 = show $ eval $ Sort "Lab (1p)" $ FromCSV hw_grades_csv
+run_subtest 3 1 5 = show $ eval $ ValueMap (\x -> if x == "" then "0" else x) $ FromCSV exam_grades_csv
+run_subtest 3 1 6 = show $ eval $ RowMap get_hw_grade_total ["Nume", "Total teme"] $ FromCSV hw_grades_csv
+run_subtest 3 1 7 = show $ eval $ VUnion (FromCSV hw_grades_csv) (FromCSV hw_grades_csv)
+run_subtest 3 1 8 = show $ eval $ HUnion (FromCSV hw_grades_csv) (FromCSV exam_grades_csv)
+run_subtest 3 1 9 = show $ eval $ TableJoin "Nume" (FromCSV hw_grades_csv) (FromCSV exam_grades_csv)
+run_subtest 3 1 10 = show $ eval $ Cartesian names_only test_schema2 (FromCSV hw_grades_csv) (FromCSV exam_grades_csv)
+run_subtest 3 1 11 = show $ eval $ Projection ["Nume", "Lab (1p)"] $ FromCSV hw_grades_csv
 -- run_subtest 3 2 1 = show $ eval $ Filter (Gt "Ex. Scris" (read "1.5" :: Float)) (FromCSV exam_grades_csv)
 -- run_subtest 3 2 2 = show $ eval $ Filter (Eq "Nume" "Lily Luca") (FromCSV exam_grades_csv)
 -- run_subtest 3 2 3 = show $ eval $ Filter (Lt "Nume" "Brian") (FromCSV hw_grades_csv)

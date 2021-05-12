@@ -5,6 +5,9 @@
 	You can add other modules aswell.
 -}
 
+{-# LANGUAGE ExistentialQuantification #-}
+{-# LANGUAGE FlexibleInstances #-}
+
 module Tasks where
 
 import Data.Maybe
@@ -169,8 +172,8 @@ tjoin column table1 table2 = map join table1
     where
         -- If there is a matching row in the second table, append it to row1 else add empty string to row1
         join :: Row -> Row
-        join row1 = if null (get_matching_row row1 table2) then 
-            extend_row (length (head table2) - 1) row1 else 
+        join row1 = if null (get_matching_row row1 table2) then
+            extend_row (length (head table2) - 1) row1 else
             row1 ++ remove_element_at_index (get_element_index column (head table2)) (get_matching_row row1 table2)
 
         -- Returns the matching row in the second table or empty list if not found
@@ -200,3 +203,47 @@ projection columns table = map extract_columns table
     where
         extract_columns :: Row -> Row
         extract_columns row = map (\column -> row !! get_element_index column (head table)) columns
+
+{-
+	TASK SET 3
+-}
+
+data Query =
+    FromCSV CSV
+    | ToCSV Query
+    | AsList String Query
+    | Sort String Query
+    | ValueMap (Value -> Value) Query
+    | RowMap (Row -> Row) [String] Query
+    | VUnion Query Query
+    | HUnion Query Query
+    | TableJoin String Query Query
+    | Cartesian (Row -> Row -> Row) [String] Query Query
+    | Projection [String] Query
+
+
+data QResult = CSV CSV | Table Table | List [String]
+
+-- Task 3.1
+instance Show QResult where
+    show (CSV csv) = show csv
+    show (Table table) = write_csv table
+    show (List list) = show list
+
+
+-- Task 3.2
+class Eval a where
+    eval :: a -> QResult
+
+instance Eval Query where
+    eval (FromCSV csv) = Table $ read_csv csv
+    eval (ToCSV query) = CSV $ show $ eval query
+    eval (AsList colname query) = List $ as_list colname $ read_csv $ show $ eval query
+    eval (Sort colname query) = Table $ tsort colname $ read_csv $ show $ eval query
+    eval (ValueMap op query) = Table $ vmap op $ read_csv $ show $ eval query
+    eval (RowMap op colnames query) = Table $ rmap op colnames $ read_csv $ show $ eval query
+    eval (VUnion query1 query2) = Table $ vunion (read_csv $ show $ eval query1) (read_csv $ show $ eval query2)
+    eval (HUnion query1 query2) = Table $ hunion (read_csv $ show $ eval query1) (read_csv $ show $ eval query2)
+    eval (TableJoin colname query1 query2) = Table $ tjoin colname (read_csv $ show $ eval query1) (read_csv $ show $ eval query2)
+    eval (Cartesian op colnames query1 query2) = Table $ cartesian op colnames (read_csv $ show $ eval query1) (read_csv $ show $ eval query2)
+    eval (Projection colnames query) = Table $ projection colnames (read_csv $ show $ eval query)
