@@ -221,8 +221,9 @@ data Query =
     | Cartesian (Row -> Row -> Row) [String] Query Query
     | Projection [String] Query
     | forall a. FEval a => Filter (FilterCondition a) Query
+    | Graph EdgeOp Query
 
-
+type EdgeOp = Row -> Row -> Maybe Value
 data QResult = CSV CSV | Table Table | List [String]
 
 data FilterCondition a =
@@ -235,6 +236,9 @@ data FilterCondition a =
 
 type FilterOp = Row -> Bool
 
+class Eval a where
+    eval :: a -> QResult
+
 class FEval a where
     feval :: [String] -> FilterCondition a -> FilterOp
 
@@ -245,9 +249,6 @@ instance Show QResult where
     show (List list) = show list
 
 -- Task 3.2
-class Eval a where
-    eval :: a -> QResult
-
 instance Eval Query where
     eval (FromCSV csv) = Table $ read_csv csv
     eval (ToCSV query) = CSV $ show $ eval query
@@ -264,6 +265,20 @@ instance Eval Query where
         where
             aux :: Table -> Table
             aux table = head table : filter (feval (head table) cond) (tail table)
+    eval (Graph op query) = Table $ (:) ["From", "To", "Value"] $ process_pairs $ generate_pairs (read_csv $ show $ eval query)
+        where
+            -- Generates all possible pairs of rows
+            generate_pairs :: Table -> [(Row, Row)]
+            generate_pairs table = [(row1, row2) | row1 <- tail table, row2 <- tail table, row1 /= row2]
+
+            -- Converts the pair of rows into the graph
+            process_pairs :: [(Row, Row)] -> Table
+            process_pairs pairs = nub $ filter (not . null) $ map (\(row1, row2) -> check_graphop_result row1 row2 (op row1 row2)) pairs
+                where
+                    check_graphop_result :: Row -> Row -> Maybe Value -> Row
+                    check_graphop_result row1 row2 (Just val) = if head row1 < head row2 then [head row1, head row2, val] else [head row2, head row1, val]
+                    check_graphop_result row1 row2 Nothing = []
+
 
 -- Task 3.3
 instance FEval Float where

@@ -70,8 +70,8 @@ run_subtest 3 2 3 = show $ eval $ Filter (Lt "Nume" "Brian") (FromCSV hw_grades_
 run_subtest 3 2 4 = show $ eval $ Filter (In "Q6" [(read "1" :: Float), (read "1" :: Float)]) (FromCSV exam_grades_csv)
 run_subtest 3 2 5 = show $ eval $ Filter (FNot $ Eq "T1 (0.5p)" "0.5") (FromCSV hw_grades_csv)
 run_subtest 3 2 6 = show $ eval $ Filter ((FieldEq "Q5" "Q6")::(FilterCondition String)) (FromCSV exam_grades_csv)
--- run_subtest 3 3 1 = show $ eval $ Graph edge_op1 (FromCSV hw_grades_csv)
--- run_subtest 3 3 2 = show $ eval $ Graph edge_op2 (FromCSV exam_grades_csv)
+run_subtest 3 3 1 = show $ eval $ Graph edge_op1 (FromCSV hw_grades_csv)
+run_subtest 3 3 2 = show $ eval $ Graph edge_op2 (FromCSV exam_grades_csv)
 
 
 edge_op1 (n1:l1:_) (n2:l2:_)
