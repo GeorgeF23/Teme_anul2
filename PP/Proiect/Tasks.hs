@@ -137,8 +137,10 @@ tsort column table = head table : sortBy cmp (tail table)
     where
         cmp :: Row -> Row -> Ordering
         cmp row1 row2
-            | row1 !! get_element_index column (head table) > row2 !! get_element_index column (head table) = GT
-            | row1 !! get_element_index column (head table) < row2 !! get_element_index column (head table) = LT
+            | row1 !! get_element_index column (head table) == "" && row2 !! get_element_index column (head table) /= "" = LT
+            | row1 !! get_element_index column (head table) /= "" && row2 !! get_element_index column (head table) == "" = GT
+            | string_to_float (row1 !! get_element_index column (head table)) > string_to_float (row2 !! get_element_index column (head table)) = GT
+            | string_to_float (row1 !! get_element_index column (head table)) < string_to_float (row2 !! get_element_index column (head table)) = LT
             | otherwise = if head row1 > head row2 then GT else LT
 
 -- Task 3
@@ -298,4 +300,14 @@ instance FEval String where
     feval colnames (FNot cond) = not . feval colnames cond
     feval colnames (FieldEq col1 col2) = \row -> (row !! get_element_index col1 colnames) == (row !! get_element_index col2 colnames)
 
+-- Task 3.6
+similarities_query :: Query
+similarities_query = Sort "Value" $ Graph graphop $ Filter (FNot (Eq "Email" "")) $ FromCSV lecture_grades_csv
+    where
+        -- The graph operation that checks if two students have a distance greater than 5
+        graphop :: Row -> Row -> Maybe Value
+        graphop row1 row2 = if get_matching_points row1 row2 >= 5 then Just (show $ get_matching_points row1 row2) else Nothing
 
+        -- Counts the number of questions with the same result
+        get_matching_points :: Row -> Row -> Integer
+        get_matching_points row1 row2 = sum $ zipWith (\value1 value2 -> if value1 == value2 then 1 else 0) (tail row1) (tail row2)
