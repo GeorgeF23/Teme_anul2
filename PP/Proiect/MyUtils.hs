@@ -1,4 +1,4 @@
-module MyUtils(string_to_float, string_to_integer, increment_field, float_to_string, get_element_index, remove_element_at_index, splitOn) where
+module MyUtils(string_to_float, string_to_integer, increment_field, float_to_string, get_element_index, remove_element_at_index, splitOn, list_contains_element) where
 
 import Text.Printf
 import Data.Maybe
@@ -23,6 +23,14 @@ increment_field field_no list = take field_no list ++ [list !! max 0 field_no + 
 -- Returns the index of an element in a list
 get_element_index :: (Eq a) => a -> [a] -> Int
 get_element_index el list = fromJust $ elemIndex el list
+
+-- Checks if an element is in a list
+list_contains_element :: (Eq a) => a -> [a] -> Bool
+list_contains_element el list = aux $ elemIndex el list
+    where
+        aux :: Maybe a -> Bool
+        aux Nothing = False
+        aux (Just a) = True
 
 -- Removes an element at a specified index from list
 remove_element_at_index :: (Eq a) => Int -> [a] -> [a]

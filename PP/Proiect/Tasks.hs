@@ -220,16 +220,29 @@ data Query =
     | TableJoin String Query Query
     | Cartesian (Row -> Row -> Row) [String] Query Query
     | Projection [String] Query
+    | forall a. FEval a => Filter (FilterCondition a) Query
 
 
 data QResult = CSV CSV | Table Table | List [String]
 
+data FilterCondition a =
+    Eq String a |
+    Lt String a |
+    Gt String a |
+    In String [a] |
+    FNot (FilterCondition a) |
+    FieldEq String String
+
+type FilterOp = Row -> Bool
+
+class FEval a where
+    feval :: [String] -> FilterCondition a -> FilterOp
+
 -- Task 3.1
 instance Show QResult where
-    show (CSV csv) = show csv
     show (Table table) = write_csv table
+    show (CSV csv) = show csv
     show (List list) = show list
-
 
 -- Task 3.2
 class Eval a where
@@ -247,3 +260,27 @@ instance Eval Query where
     eval (TableJoin colname query1 query2) = Table $ tjoin colname (read_csv $ show $ eval query1) (read_csv $ show $ eval query2)
     eval (Cartesian op colnames query1 query2) = Table $ cartesian op colnames (read_csv $ show $ eval query1) (read_csv $ show $ eval query2)
     eval (Projection colnames query) = Table $ projection colnames (read_csv $ show $ eval query)
+    eval (Filter cond query) = Table $ aux (read_csv $ show $ eval query)
+        where
+            aux :: Table -> Table
+            aux table = head table : filter (feval (head table) cond) (tail table)
+
+-- Task 3.3
+instance FEval Float where
+    feval colnames (Eq colname value) = \row -> string_to_float (row !! get_element_index colname colnames) == value
+    feval colnames (Gt colname value) = \row -> string_to_float (row !! get_element_index colname colnames) > value
+    feval colnames (Lt colname value) = \row -> string_to_float (row !! get_element_index colname colnames) < value
+    feval colnames (In colname values) = \row -> list_contains_element (string_to_float $ row !! get_element_index colname colnames) values
+    feval colnames (FNot cond) = not . feval colnames cond
+    feval colnames (FieldEq col1 col2) = \row -> (row !! get_element_index col1 colnames) == (row !! get_element_index col2 colnames)
+
+
+instance FEval String where
+    feval colnames (Eq colname value) = \row -> (row !! get_element_index colname colnames) == value
+    feval colnames (Gt colname value) = \row -> (row !! get_element_index colname colnames) > value
+    feval colnames (Lt colname value) = \row -> (row !! get_element_index colname colnames) < value
+    feval colnames (In colname values) = \row -> list_contains_element (row !! get_element_index colname colnames) values
+    feval colnames (FNot cond) = not . feval colnames cond
+    feval colnames (FieldEq col1 col2) = \row -> (row !! get_element_index col1 colnames) == (row !! get_element_index col2 colnames)
+
+
