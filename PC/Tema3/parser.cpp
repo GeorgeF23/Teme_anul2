@@ -107,7 +107,7 @@ char *create_get_book_message(char *host, char *jwt) {
     return request;
 }
 
-char *create_add_book_message(char *host, char *cookie, char *jwt) {
+char *create_add_book_message(char *host, char *jwt) {
     char *request = (char*)calloc(MAX_REQUEST_LENGTH, sizeof(char));
     char *line = (char*)calloc(MAX_LINE_LENGTH, sizeof(char));
 
@@ -154,6 +154,28 @@ char *create_add_book_message(char *host, char *cookie, char *jwt) {
     return request;
 }
 
+char *create_delete_book_message(char *host, char *jwt) {
+    char *request = (char*)calloc(MAX_REQUEST_LENGTH, sizeof(char));
+    char *line = (char*)calloc(MAX_LINE_LENGTH, sizeof(char));
+
+    int book_id;
+    cout << "id=";
+    cin >> book_id;
+
+    sprintf(line, "DELETE /api/v1/tema/library/books/%d", book_id);
+    compute_message(request, line);
+
+    sprintf(line, "Host: %s", host);
+    compute_message(request, line);
+
+    sprintf(line, "Authorization: Bearer %s", jwt);
+    compute_message(request, line);
+
+    compute_message(request, "");
+
+    free(line);
+    return request;
+}
 
 char *create_logout_message(char *host, char *cookie) {
     char *request = (char*)calloc(MAX_REQUEST_LENGTH, sizeof(char));
@@ -197,7 +219,9 @@ char *create_request_message(char *host, char command[], char *cookie, char *jwt
     } else if (strcmp(command_type, "get_book") == 0) {
         return create_get_book_message(host, jwt);
     } else if (strcmp(command_type, "add_book") == 0) {
-        return create_add_book_message(host, cookie, jwt);
+        return create_add_book_message(host, jwt);
+    } else if (strcmp(command_type, "delete_book") == 0) {
+        return create_delete_book_message(host, jwt);
     } else if (strcmp(command_type, "logout") == 0) {
         return create_logout_message(host, cookie);
     }
