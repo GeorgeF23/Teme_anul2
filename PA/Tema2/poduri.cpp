@@ -38,14 +38,15 @@ int shortest_path(int x, int y, vector<vector<char>> grid, int n, int m) {
         pair<int, int> pos = q.front();
         int current_dist = dist[pos.first][pos.second];
 
+        // Verifica daca pozitia e pe mal
         if (is_finish(pos.first, pos.second, n, m)) {
             return current_dist;
         }
 
-
         pair<int, int> move_aux;
 
         if (grid[pos.first][pos.second] == 'V') {
+            // Adauga pozitiile de pe verticala
             move_aux = make_pair(pos.first + 1, pos.second);
             if (grid[move_aux.first][move_aux.second] != '.') {
                 q.push(move_aux);
@@ -58,6 +59,7 @@ int shortest_path(int x, int y, vector<vector<char>> grid, int n, int m) {
                 dist[move_aux.first][move_aux.second] = current_dist + 1;
             }
         } else if (grid[pos.first][pos.second] == 'O') {
+            // Adauga pozitiile de pe orizontala
             move_aux = make_pair(pos.first, pos.second + 1);
             if (grid[move_aux.first][move_aux.second] != '.') {
                 q.push(move_aux);
@@ -70,6 +72,7 @@ int shortest_path(int x, int y, vector<vector<char>> grid, int n, int m) {
                 dist[move_aux.first][move_aux.second] = current_dist + 1;
             }
         } else if (grid[pos.first][pos.second] == 'D') {
+            // Adauga pozitiile de pe orizontala si verticala
             move_aux = make_pair(pos.first + 1, pos.second);
             if (grid[move_aux.first][move_aux.second] != '.') {
                 q.push(move_aux);
@@ -94,6 +97,7 @@ int shortest_path(int x, int y, vector<vector<char>> grid, int n, int m) {
                 dist[move_aux.first][move_aux.second] = current_dist + 1;
             }
         }
+        // Marcheaza pozitia ca fiind vizitata si scoate din coada
         grid[pos.first][pos.second] = '.';
         q.pop();
     }
