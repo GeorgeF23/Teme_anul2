@@ -84,6 +84,77 @@ char *create_get_books_message(char *host, char *jwt) {
     return request;
 }
 
+char *create_get_book_message(char *host, char *jwt) {
+    char *request = (char*)calloc(MAX_REQUEST_LENGTH, sizeof(char));
+    char *line = (char*)calloc(MAX_LINE_LENGTH, sizeof(char));
+
+    int book_id;
+    cout << "id=";
+    cin >> book_id;
+
+    sprintf(line, "GET /api/v1/tema/library/books/%d", book_id);
+    compute_message(request, line);
+
+    sprintf(line, "Host: %s", host);
+    compute_message(request, line);
+
+    sprintf(line, "Authorization: Bearer %s", jwt);
+    compute_message(request, line);
+
+    compute_message(request, "");
+
+    free(line);
+    return request;
+}
+
+char *create_add_book_message(char *host, char *cookie, char *jwt) {
+    char *request = (char*)calloc(MAX_REQUEST_LENGTH, sizeof(char));
+    char *line = (char*)calloc(MAX_LINE_LENGTH, sizeof(char));
+
+    string title, author, genre, publisher;
+    int page_count;
+
+    cout << "title=";
+    cin >> title;
+    cout << "author=";
+    cin >> author;
+    cout << "genre=";
+    cin >> genre;
+    cout << "publisher=";
+    cin >> publisher;
+    cout << "page_count=";
+    cin >> page_count;
+
+    json j;
+    j["title"] = title;
+    j["author"] = author;
+    j["genre"] = genre;
+    j["publisher"] = publisher;
+    j["page_count"] = page_count;
+
+    sprintf(line, "POST /api/v1/tema/library/books");
+    compute_message(request, line);
+
+    sprintf(line, "Host: %s", host);
+    compute_message(request, line);
+
+    sprintf(line, "Authorization: Bearer %s", jwt);
+    compute_message(request, line);
+
+    sprintf(line, "Content-Type: application/json");
+    compute_message(request, line);
+
+    sprintf(line, "Content-Length: %ld", strlen(j.dump().c_str()));
+    compute_message(request, line);
+
+    compute_message(request, "");
+    compute_message(request, j.dump().c_str());
+
+    free(line);
+    return request;
+}
+
+
 char *create_logout_message(char *host, char *cookie) {
     char *request = (char*)calloc(MAX_REQUEST_LENGTH, sizeof(char));
     char *line = (char*)calloc(MAX_LINE_LENGTH, sizeof(char));
@@ -123,6 +194,10 @@ char *create_request_message(char *host, char command[], char *cookie, char *jwt
         return create_access_request_message(host, cookie);
     } else if (strcmp(command_type, "get_books") == 0) {
         return create_get_books_message(host, jwt);
+    } else if (strcmp(command_type, "get_book") == 0) {
+        return create_get_book_message(host, jwt);
+    } else if (strcmp(command_type, "add_book") == 0) {
+        return create_add_book_message(host, cookie, jwt);
     } else if (strcmp(command_type, "logout") == 0) {
         return create_logout_message(host, cookie);
     }

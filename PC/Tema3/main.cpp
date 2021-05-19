@@ -54,6 +54,8 @@ int main() {
                 extract_jwt(response_message, jwt);
             } else if(strcmp(last_command, "get_books") == 0) {
                 cout << basic_extract_json_response(response_message) << "\n";
+            } else if(strcmp(last_command, "get_book") == 0) {
+                cout << basic_extract_json_response(response_message) << "\n";
             }
         }
 
