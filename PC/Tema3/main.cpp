@@ -15,7 +15,7 @@ int main() {
 
     while(1) {
         // Generate the request
-        char *request_message = create_request_message(server_ip, last_command, cookie);
+        char *request_message = create_request_message(server_ip, last_command, cookie, jwt);
 
         if (request_message == NULL) {
             fprintf(stderr, "Invalid command!\n");
@@ -47,11 +47,13 @@ int main() {
             cout << get_error_message(response_message) << "\n";
         } else {
             cout << last_command << " success!\n";
+
             if (strcmp(last_command, "login") == 0) {
                 extract_cookie(response_message, cookie);
             } else if(strcmp(last_command, "enter_library") == 0) {
                 extract_jwt(response_message, jwt);
-                cout << jwt << "\n";
+            } else if(strcmp(last_command, "get_books") == 0) {
+                cout << basic_extract_json_response(response_message) << "\n";
             }
         }
 

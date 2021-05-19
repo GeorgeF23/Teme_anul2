@@ -65,7 +65,26 @@ char *create_access_request_message(char *host, char *cookie) {
     return request;
 }
 
-char *create_request_message(char *host, char command[], char *cookie) {
+char *create_get_books_message(char *host, char *jwt) {
+    char *request = (char*)calloc(MAX_REQUEST_LENGTH, sizeof(char));
+    char *line = (char*)calloc(MAX_LINE_LENGTH, sizeof(char));
+
+    sprintf(line, "GET /api/v1/tema/library/books");
+    compute_message(request, line);
+
+    sprintf(line, "Host: %s", host);
+    compute_message(request, line);
+
+    sprintf(line, "Authorization: Bearer %s", jwt);
+    compute_message(request, line);
+
+    compute_message(request, "");
+
+    free(line);
+    return request;
+}
+
+char *create_request_message(char *host, char command[], char *cookie, char *jwt) {
     char command_type[MAX_COMMAND_LENGTH];
     cin >> command_type;
 
@@ -82,6 +101,8 @@ char *create_request_message(char *host, char command[], char *cookie) {
         return create_login_register_message(host, command_type);
     } else if (strcmp(command_type, "enter_library") == 0) {
         return create_access_request_message(host, cookie);
+    } else if (strcmp(command_type, "get_books") == 0) {
+        return create_get_books_message(host, jwt);
     }
 
     return NULL;

@@ -18,9 +18,10 @@
  * @param   host - the destination host
  * @param   command - side effect return: the command name is stored here
  * @param   cookie - the cookie
+ * @param   jwt - the jwt token
  * @retval The string containing the request
  */
-char *create_request_message(char *host, char command[], char *cookie);
+char *create_request_message(char *host, char command[], char *cookie, char *jwt);
 
 /**
  * @brief  Checks if the host send an error
