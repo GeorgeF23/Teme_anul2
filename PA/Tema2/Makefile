@@ -1,6 +1,6 @@
 # Preluat din laborator
 CC = g++
-CFLAGS = -Wall -Wextra -std=c++17
+CFLAGS = -Wall -Wextra -std=c++17 -g
 LDFLAGS = -lm
 
 SRCS = $(sort $(wildcard *.cpp))
@@ -14,6 +14,7 @@ build: $(TARGETS)
 	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
 run-p1:      # nume necesar
+	./poduri
 
 run-p2:      # nume necesar
 
@@ -22,3 +23,4 @@ run-p3:      # nume necesar
 run-p4:      # nume necesar
 
 clean:		 # nume necesar
+	rm -f poduri
