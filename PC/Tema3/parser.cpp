@@ -33,9 +33,6 @@ char *create_login_register_message(char *host, char type[]) {
     sprintf(line, "Host: %s", host);
     compute_message(request, line);
 
-    sprintf(line, "Connection: keep-alive");
-    compute_message(request, line);
-
     sprintf(line, "Content-Type: application/json");
     compute_message(request, line);
 
@@ -49,7 +46,26 @@ char *create_login_register_message(char *host, char type[]) {
     return request;
 }
 
-char *create_request_message(char *host, char command[]) {
+char *create_access_request_message(char *host, char *cookie) {
+    char *request = (char*)calloc(MAX_REQUEST_LENGTH, sizeof(char));
+    char *line = (char*)calloc(MAX_LINE_LENGTH, sizeof(char));
+
+    sprintf(line, "GET /api/v1/tema/library/access");
+    compute_message(request, line);
+
+    sprintf(line, "Host: %s", host);
+    compute_message(request, line);
+
+    sprintf(line, "Cookie: %s", cookie);
+    compute_message(request, line);
+
+    compute_message(request, "");
+
+    free(line);
+    return request;
+}
+
+char *create_request_message(char *host, char command[], char *cookie) {
     char command_type[MAX_COMMAND_LENGTH];
     cin >> command_type;
 
@@ -64,6 +80,8 @@ char *create_request_message(char *host, char command[]) {
         return create_login_register_message(host, command_type);
     } else if (strcmp(command_type, "login") == 0) {
         return create_login_register_message(host, command_type);
+    } else if (strcmp(command_type, "enter_library") == 0) {
+        return create_access_request_message(host, cookie);
     }
 
     return NULL;
@@ -84,4 +102,9 @@ void extract_cookie(char *response, char *cookie) {
     char *cookie_end = strchr(cookie_start, '\r');
 
     strncpy(cookie, cookie_start, cookie_end - cookie_start);
+}
+
+void extract_jwt(char *response, char *jwt) {
+    json j = json::parse(basic_extract_json_response(response));
+    strcpy(jwt, j["token"].get<string>().c_str());
 }

@@ -17,9 +17,10 @@
  * @note   
  * @param   host - the destination host
  * @param   command - side effect return: the command name is stored here
+ * @param   cookie - the cookie
  * @retval The string containing the request
  */
-char *create_request_message(char *host, char command[]);
+char *create_request_message(char *host, char command[], char *cookie);
 
 /**
  * @brief  Checks if the host send an error
@@ -46,4 +47,12 @@ char *get_error_message(char *response);
  */
 void extract_cookie(char *response, char *cookie);
 
+/**
+ * @brief  Extract the jwt token from the response
+ * @note   
+ * @param  *response: the response
+ * @param  *jwt: side effect return: the jwt token is stored here
+ * @retval None
+ */
+void extract_jwt(char *response, char *jwt);
 #endif

@@ -10,10 +10,12 @@ int main() {
 
     char last_command[MAX_COMMAND_LENGTH];
     char *cookie = (char *)calloc(MAX_LINE_LENGTH, sizeof(char));
+    char *jwt = (char *)calloc(MAX_LINE_LENGTH, sizeof(char));
+
 
     while(1) {
         // Generate the request
-        char *request_message = create_request_message(server_ip, last_command);
+        char *request_message = create_request_message(server_ip, last_command, cookie);
 
         if (request_message == NULL) {
             fprintf(stderr, "Invalid command!\n");
@@ -30,6 +32,7 @@ int main() {
         if (sockfd < 0) {
             free(request_message);
             free(cookie);
+            free(jwt);
             error("Error while connecting to the server!\n");
         }
         
@@ -46,6 +49,9 @@ int main() {
             cout << last_command << " success!\n";
             if (strcmp(last_command, "login") == 0) {
                 extract_cookie(response_message, cookie);
+            } else if(strcmp(last_command, "enter_library") == 0) {
+                extract_jwt(response_message, jwt);
+                cout << jwt << "\n";
             }
         }
 
@@ -55,5 +61,6 @@ int main() {
         close_connection(sockfd);
     }
     free(cookie);
+    free(jwt);
     return 0;
 }
