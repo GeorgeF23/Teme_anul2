@@ -1,0 +1,24 @@
+# Preluat din laborator
+CC = g++
+CFLAGS = -Wall -Wextra -std=c++17
+LDFLAGS = -lm
+
+SRCS = $(sort $(wildcard *.cpp))
+TARGETS = $(patsubst %.cpp,%,$(SRCS))
+
+# build all targets
+build: $(TARGETS)
+
+# general rule for building a target
+%: %.cpp
+	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
+
+run-p1:      # nume necesar
+
+run-p2:      # nume necesar
+
+run-p3:      # nume necesar
+
+run-p4:      # nume necesar
+
+clean:		 # nume necesar
