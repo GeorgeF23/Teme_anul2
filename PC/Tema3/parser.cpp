@@ -54,7 +54,10 @@ char *create_request_message(char *host) {
     cin >> command_type;
 
     if (strcmp(command_type, "exit") == 0) {
-        return "exit";
+        // dynamically alloc exit message to match return value
+        char *exit_message = (char *)calloc(5, sizeof(char));
+        strcpy(exit_message, "exit");
+        return exit_message;
     } else if (strcmp(command_type, "register") == 0) {
         return create_login_register_message(host, command_type);
     } else if (strcmp(command_type, "login") == 0) {

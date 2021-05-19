@@ -13,14 +13,14 @@ int main() {
         // Generate the request
         char *request_message = create_request_message(server_ip);
 
-        if (strcmp(request_message, "exit") == 0) {
-            free(request_message);
-            break;
-        }
-
         if (request_message == NULL) {
             fprintf(stderr, "Invalid command!\n");
             continue;
+        }
+
+        if (strcmp(request_message, "exit") == 0) {
+            free(request_message);
+            break;
         }
 
         // Open the connection
