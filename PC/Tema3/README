@@ -1,0 +1,29 @@
+Nume: Floarea George-Marian
+Grupa: 324CB
+
+Pentru lucrul cu socketi am folosit fisierele buffer si helpers din laborator.
+
+Pentru parsarea JSON am folosit biblioteca nlohmann pentru c++ pentru ca are un API mai usor de folosit decat cea din C.
+Aceasta a fost folosita pentru extragerea token-ului jwt pentru comanda enter_library, dar si pentru construirea 
+content-ului in comenzile register/login/add_book.
+
+Pentru a crea un request si pentru a extrage informatii din response mi-am creat fisierele parser.h si parser.cpp.
+Functia "create_request_message", impreuna cu mai multe functii mici, construieste mesajul pentru request.
+Functia "is_error" verifica daca host-ul a intors o eroare, folosindu-se de codul din headerul de response.
+Functia "get_error_message" returneaza mesajul de eroare din response.
+Functia "extract_cookie" scoate cookie-ul din headerul de response.
+Functia "extract_jwt" scoate token-ul jwt din contentul din response.
+
+Modul de functionare al aplicatiei este urmatorul:
+    - se creeaza mesajul de request
+    - se verifica daca e exit, caz in care se iese din program
+    - se creeaza conexiunea la server
+    - se trimite mesajul
+    - se primeste mesajul de response
+    - se verifica daca e eroare
+        - daca da, afiseaza eroarea
+        - daca nu, afiseaza un mesaj de succes
+            - daca comanda a fost login, atunci se extrace cookie-ul
+            - daca comanda a fost enter_library, atunci se extrage token-ul
+            - daca comanda a fost get_books, atunci se afiseaza content-ul din raspuns
+            - daca comanda a fost get_book, atunci se afiseaza content-ul din raspuns 
