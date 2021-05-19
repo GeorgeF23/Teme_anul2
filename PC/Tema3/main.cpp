@@ -8,7 +8,6 @@ int main() {
     char server_ip[] = "34.118.48.238";
     const int server_port = 8080;
 
-
     while(1) {
         // Generate the request
         char *request_message = create_request_message(server_ip);
@@ -26,6 +25,7 @@ int main() {
         // Open the connection
         int sockfd = open_connection(server_ip, server_port, AF_INET, SOCK_STREAM, 0);
         if (sockfd < 0) {
+            free(request_message);
             error("Error while connecting to the server!\n");
         }
         
@@ -35,7 +35,11 @@ int main() {
         // Receive the response
         char *response_message = receive_from_server(sockfd);
 
-        cout << response_message;
+        if (is_error(response_message)) {
+            cout << get_error_message(response_message) << "\n";
+        } else {
+            cout << "Success!\n";
+        }
 
         // Clear the memory, close the connection
         free(response_message);

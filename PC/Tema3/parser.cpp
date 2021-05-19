@@ -50,7 +50,7 @@ char *create_login_register_message(char *host, char type[]) {
 }
 
 char *create_request_message(char *host) {
-    char command_type[20];
+    char command_type[MAX_COMMAND_LENGTH];
     cin >> command_type;
 
     if (strcmp(command_type, "exit") == 0) {
@@ -65,4 +65,14 @@ char *create_request_message(char *host) {
     }
 
     return NULL;
+}
+
+int is_error(char *response) {
+    char *code = strchr(response, ' ') + 1;
+    if (code[0] != '2') return 1;
+    return 0;
+}
+
+char *get_error_message(char *response) {
+    return basic_extract_json_response(response);
 }
