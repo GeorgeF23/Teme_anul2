@@ -84,6 +84,26 @@ char *create_get_books_message(char *host, char *jwt) {
     return request;
 }
 
+char *create_logout_message(char *host, char *cookie) {
+    char *request = (char*)calloc(MAX_REQUEST_LENGTH, sizeof(char));
+    char *line = (char*)calloc(MAX_LINE_LENGTH, sizeof(char));
+
+    sprintf(line, "GET /api/v1/tema/auth/logout");
+    compute_message(request, line);
+
+    sprintf(line, "Host: %s", host);
+    compute_message(request, line);
+
+    sprintf(line, "Cookie: %s", cookie);
+    compute_message(request, line);
+
+    compute_message(request, "");
+
+    free(line);
+    return request;
+}
+
+
 char *create_request_message(char *host, char command[], char *cookie, char *jwt) {
     char command_type[MAX_COMMAND_LENGTH];
     cin >> command_type;
@@ -103,6 +123,8 @@ char *create_request_message(char *host, char command[], char *cookie, char *jwt
         return create_access_request_message(host, cookie);
     } else if (strcmp(command_type, "get_books") == 0) {
         return create_get_books_message(host, jwt);
+    } else if (strcmp(command_type, "logout") == 0) {
+        return create_logout_message(host, cookie);
     }
 
     return NULL;
