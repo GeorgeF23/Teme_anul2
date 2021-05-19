@@ -49,9 +49,11 @@ char *create_login_register_message(char *host, char type[]) {
     return request;
 }
 
-char *create_request_message(char *host) {
+char *create_request_message(char *host, char command[]) {
     char command_type[MAX_COMMAND_LENGTH];
     cin >> command_type;
+
+    strcpy(command, command_type);
 
     if (strcmp(command_type, "exit") == 0) {
         // dynamically alloc exit message to match return value
@@ -75,4 +77,11 @@ int is_error(char *response) {
 
 char *get_error_message(char *response) {
     return basic_extract_json_response(response);
+}
+
+void extract_cookie(char *response, char *cookie) {
+    char *cookie_start = strstr(response, "Set-Cookie") + 12;
+    char *cookie_end = strchr(cookie_start, '\r');
+
+    strncpy(cookie, cookie_start, cookie_end - cookie_start);
 }

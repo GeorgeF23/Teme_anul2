@@ -16,9 +16,10 @@
  * @brief  Parses input from stdin and creates the request message
  * @note   
  * @param   host - the destination host
+ * @param   command - side effect return: the command name is stored here
  * @retval The string containing the request
  */
-char *create_request_message(char *host);
+char *create_request_message(char *host, char command[]);
 
 /**
  * @brief  Checks if the host send an error
@@ -35,5 +36,14 @@ int is_error(char *response);
  * @retval the error message
  */
 char *get_error_message(char *response);
+
+/**
+ * @brief  Extract the cookie from the response
+ * @note   
+ * @param  *response: the response
+ * @param  *cookie: side effect return: the cookie is stored here
+ * @retval None
+ */
+void extract_cookie(char *response, char *cookie);
 
 #endif
