@@ -22,3 +22,28 @@ cand se ajunge pe ele.
 
 Complexitate de timp: O(n * m) data de faptul ca in cel mai rau caz toate pozitiile pot fi in coada
 Complexitate de spatiu: O(n * m) data de matricile grid si dist.
+
+2. Adrese
+
+Pentru a stoca informatiile despre o persoana am creat structura "person" care retine numele sub forma de string si
+email-urile sub forma de set<string>.
+
+Functia principala care rezolva problema este "get_unique_people" care primeste un vector de persoane si intoarce un vector de persoane unice.
+    - in map-ul emails se retine indicele persoanei care detine un anumit email. acesta poate sa retina daca un email apartine deja unei persoane
+    - in groups retin toate grupurile de persoane
+    - in group_id retin id-ul grupului din care face parte fiecare persoana
+
+Pasii algoritmului sunt urmatorii:
+    - se itereaza prin lista de persoane
+        - se itereaza prin lista de email-uri a persoanei
+            - daca emailul apartine deja altei persoane, atunci inserez persoana curenta in grupul acesteia
+            - daca nu, atunci inserez email-ul in map-ul emails
+        - daca persoana nu a fost introdusa in niciun grup, atunci creez un grup nou si o introduc in el
+
+    - dupa pasii de mai sus se poate ca o persoana sa fie introdusa in mai multe grupuri, asa ca fac reuniunea grupurilor care au elemente comune
+    
+    - iterez prin fiecare grup
+        - unesc toate persoanele din grup, concatenand lista de emailuri ale fiecareia
+
+Complexitate de timp: O(n * logn) data de sortare
+Complexitate de spatiu: O(n)

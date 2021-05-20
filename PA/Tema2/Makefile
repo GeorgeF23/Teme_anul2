@@ -17,6 +17,7 @@ run-p1:      # nume necesar
 	./poduri
 
 run-p2:      # nume necesar
+	./adrese
 
 run-p3:      # nume necesar
 
@@ -24,3 +25,4 @@ run-p4:      # nume necesar
 
 clean:		 # nume necesar
 	rm -f poduri
+	rm -f adrese
