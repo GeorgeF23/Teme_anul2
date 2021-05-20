@@ -18,7 +18,6 @@ int main() {
         char *request_message = create_request_message(server_ip, last_command, cookie, jwt);
 
         if (request_message == NULL) {
-            fprintf(stderr, "Invalid command!\n");
             continue;
         }
 

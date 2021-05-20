@@ -115,7 +115,7 @@ char *create_add_book_message(char *host, char *jwt) {
     int page_count;
 
     cout << "title=";
-    cin >> title;
+    getline(cin, title);
     cout << "author=";
     cin >> author;
     cout << "genre=";
@@ -199,8 +199,7 @@ char *create_logout_message(char *host, char *cookie) {
 
 char *create_request_message(char *host, char command[], char *cookie, char *jwt) {
     char command_type[MAX_COMMAND_LENGTH];
-    cin >> command_type;
-
+    cin.getline(command_type, MAX_COMMAND_LENGTH);
     strcpy(command, command_type);
 
     if (strcmp(command_type, "exit") == 0) {
