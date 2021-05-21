@@ -49,7 +49,7 @@ vector<person> get_unique_people(vector<person> people) {
     }
 
     // Union all groups with common elements
-    for (int i = 0; i < groups.size(); i++) {
+    for (int i = 0; i < (int)groups.size(); i++) {
         for (auto &el : groups[i]) {
             if (group_id[el] != i) {
                 groups[group_id[el]].insert(groups[i].begin(), groups[i].end());
