@@ -47,3 +47,15 @@ Pasii algoritmului sunt urmatorii:
 
 Complexitate de timp: O(n * logn) data de sortare
 Complexitate de spatiu: O(n)
+
+3. Lego
+
+Pentru a rezolva problema am folosit backtracking pentru a genera toate posibilitatile de n piese de dimensiuni diferite, prima dintre ele fiind piesa de dim 1.
+Pentru fiecare posibilitate de piese calculez numarul de numere consecutive ce se pot forma insumand T piese, folosind un algoritm de programare dinamica.
+Daca numarul de piese consecutive calculat este mai mare decat un maxim, atunci stochez aceasta solutie.
+
+Complexitate de timp: O(Combinari(k, n) * T * K * N)
+    - Combinari(k, n) apare din cauza backtracking-ului
+    - T * K * N apare din functia get_consecutive_numbers care e apelata pentru fiecare solutie din backtracking
+
+Complexitate de spatiu: O(T * K) data de vectorul dp
