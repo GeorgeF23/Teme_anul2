@@ -1,0 +1,61 @@
+Nume: Floarea George-Marian
+Grupa: 324CB
+
+1. Poduri
+
+Algoritmul folosit este algorimtul lui Lee (BFS).
+Pasii algoritmului sunt urmatorii:
+    - adaug pozitia de start intr-o coada
+    - cat timp am elemente in coada:
+        - extrag primul element din coada
+        - daca acesta e o pozitie de final atunci returnez distanta pana la el
+        - daca nu, atunci pentru fiecare pozitie vecina valida:
+            - adaug pozitia vecina in coada
+            - actualizez distanta pana la pozitia vecina ca fiind distanta pana la pozitia extrasa din coada + 1
+        - marchez pozitia ca fiind vizitata punand '.' in matrice
+
+O pozitie se considera valida daca in matrice are o valoare diferita de '.'
+
+Matricele au dimensiunile (n + 2) * (m + 2), deoarece am vrut ca liniile si coloanele cu indicii
+0 sau (n+1), respectiv (m+1) sa fie considerate valide, iar functia is_finish sa returneze true atunci
+cand se ajunge pe ele.
+
+Complexitate de timp: O(n * m) data de faptul ca in cel mai rau caz toate pozitiile pot fi in coada
+Complexitate de spatiu: O(n * m) data de matricile grid si dist.
+
+2. Adrese
+
+Pentru a stoca informatiile despre o persoana am creat structura "person" care retine numele sub forma de string si
+email-urile sub forma de set<string>.
+
+Functia principala care rezolva problema este "get_unique_people" care primeste un vector de persoane si intoarce un vector de persoane unice.
+    - in map-ul emails se retine indicele persoanei care detine un anumit email. acesta poate sa retina daca un email apartine deja unei persoane
+    - in groups retin toate grupurile de persoane
+    - in group_id retin id-ul grupului din care face parte fiecare persoana
+
+Pasii algoritmului sunt urmatorii:
+    - se itereaza prin lista de persoane
+        - se itereaza prin lista de email-uri a persoanei
+            - daca emailul apartine deja altei persoane, atunci inserez persoana curenta in grupul acesteia
+            - daca nu, atunci inserez email-ul in map-ul emails
+        - daca persoana nu a fost introdusa in niciun grup, atunci creez un grup nou si o introduc in el
+
+    - dupa pasii de mai sus se poate ca o persoana sa fie introdusa in mai multe grupuri, asa ca fac reuniunea grupurilor care au elemente comune
+    
+    - iterez prin fiecare grup
+        - unesc toate persoanele din grup, concatenand lista de emailuri ale fiecareia
+
+Complexitate de timp: O(n * logn) data de sortare
+Complexitate de spatiu: O(n)
+
+3. Lego
+
+Pentru a rezolva problema am folosit backtracking pentru a genera toate posibilitatile de n piese de dimensiuni diferite, prima dintre ele fiind piesa de dim 1.
+Pentru fiecare posibilitate de piese calculez numarul de numere consecutive ce se pot forma insumand T piese, folosind un algoritm de programare dinamica.
+Daca numarul de piese consecutive calculat este mai mare decat un maxim, atunci stochez aceasta solutie.
+
+Complexitate de timp: O(Combinari(k, n) * T * K * N)
+    - Combinari(k, n) apare din cauza backtracking-ului
+    - T * K * N apare din functia get_consecutive_numbers care e apelata pentru fiecare solutie din backtracking
+
+Complexitate de spatiu: O(T * K) data de vectorul dp

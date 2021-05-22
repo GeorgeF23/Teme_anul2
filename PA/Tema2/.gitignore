@@ -1,0 +1,11 @@
+.vscode/
+_utils/
+public_tests/
+check
+Makefile.PA
+README.checker
+cpp.errors
+java.errors
+
+poduri
+adrese
