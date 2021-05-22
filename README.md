@@ -24,7 +24,7 @@ Communication Protocols
   -> HW3: HTTP client
 
 Algorithm Design  
-  -> HW1: DP, Greedy
+  -> HW1: DP, Greedy  
   -> HW2: Backtracking, Graphs
   
 Programming paradigms  
