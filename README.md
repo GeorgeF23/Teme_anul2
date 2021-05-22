@@ -19,9 +19,9 @@ Object Oriented Programming
   -> Project: Auction house
 
 Communication Protocols  
-  -> HW1: Router
-  -> HW2: TCP server and client
-  -> HW3: HTTP client
+  -> HW1: Router  
+  -> HW2: TCP server and client  
+  -> HW3: HTTP client  
 
 Algorithm Design  
   -> HW1: DP, Greedy  
