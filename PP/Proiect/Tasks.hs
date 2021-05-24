@@ -384,34 +384,50 @@ correct_table column bad_table_csv ref_table_csv = write_csv reconstruct_table
                     | otherwise = 1 + minimum [dp ! (i - 1, j), dp ! (i, j - 1), dp ! (i - 1, j - 1)]
 
 
--- grades :: CSV -> CSV -> CSV -> CSV -> CSV
-grades t1 t2 t3 t4 = write_csv $ (:) ["Nume", "Punctaj Teme", "Punctaj Curs", "Punctaj Exam", "Punctaj Total"] $ sortBy cmp $ map (\row -> row ++ [total_grade row]) $ tail combined_tables
+grades :: CSV -> CSV -> CSV -> CSV -> CSV
+grades t1 t2 t3 t4 = write_csv $ (:) ["Nume", "Punctaj Teme", "Punctaj Curs", "Punctaj Exam", "Punctaj Total"] $ 
+                        sortBy cmp $ map (\row -> row ++ [total_grade row]) $ 
+                        tail combined_tables
     where
+        -- Compare function
         cmp :: Row -> Row -> Ordering
         cmp row1 row2
             | head row1 < head row2 = LT
             | head row1 > head row2 = GT
             | otherwise = EQ
 
+        -- Stores the correct email_map table
         email_map_table = read_csv $ correct_table "Nume" t1 t2
 
+        -- Creates a table that holds the name and hw grades of the students
         hw_grades_table = (:) ["Nume", "Punctaj Teme"] $ map (\row -> [head row, get_hw_grade row]) $ tail $ read_csv t2
             where
+                -- Computes the hw grade of a student
                 get_hw_grade :: Row -> Value
                 get_hw_grade row = float_to_string $ sum $ map string_to_float $ tail row
 
+        -- Creates a table that holds the name and exam grades of the students
         exam_grades_table = (:) ["Nume", "Punctaj Exam"] $ tail $ compute_exam_grades $ read_csv t3
 
-        lecture_grades_table = (:) ["Nume", "Punctaj Curs"] $ map (\row -> [head row, get_lecture_grade row]) $ tail $ map (\row -> get_name (head row) : tail row) $ qtable_to_table $ eval $ Filter (FNot (Eq "Email" "")) $ FromCSV t4
+        -- Creates a table that holds the name and lecture grades of the students
+        lecture_grades_table = (:) ["Nume", "Punctaj Curs"] $ 
+                                map (\row -> [head row, get_lecture_grade row]) $ 
+                                tail $ map (\row -> get_name (head row) : tail row) $ 
+                                qtable_to_table $ eval $ Filter (FNot (Eq "Email" "")) $ 
+                                FromCSV t4
             where
+                -- Searches the name in the email_map table
                 get_name :: Value -> Value
                 get_name email = head $ email_map_table !! (+) 1 (get_element_index email $ as_list "Email" email_map_table)
 
+                -- Computes the lecture grade of a student
                 get_lecture_grade :: Row -> Value
                 get_lecture_grade row = float_to_string $ 2 * sum (map string_to_float $ tail row) / fromIntegral (length row - 1)
 
+        -- Stores the combined tables (Hw grades, exam grades and lecture grades)
         combined_tables = tjoin "Nume" (tjoin "Nume" hw_grades_table lecture_grades_table) exam_grades_table
 
+        -- Computes the total grade of a student
         total_grade :: Row -> Value
         total_grade row
             | string_to_float (row !! 1) + string_to_float (row !! 2) < 2.5 || string_to_float (row !! 3) < 2.5 = "4.00"
