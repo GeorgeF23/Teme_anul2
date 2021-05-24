@@ -20,9 +20,13 @@ float_to_string = printf "%.2f"
 increment_field :: Int -> [Integer] -> [Integer]
 increment_field field_no list = take field_no list ++ [list !! max 0 field_no + 1] ++ drop (min (length list) field_no + 1) list
 
--- Returns the index of an element in a list
+-- Returns the index of an element in a list / -1 if not found
 get_element_index :: (Eq a) => a -> [a] -> Int
-get_element_index el list = fromJust $ elemIndex el list
+get_element_index el list = aux $ elemIndex el list
+    where
+        aux :: Maybe Int -> Int
+        aux (Just el) = el
+        aux Nothing = -1
 
 -- Checks if an element is in a list
 list_contains_element :: (Eq a) => a -> [a] -> Bool

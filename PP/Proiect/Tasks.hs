@@ -12,6 +12,7 @@ module Tasks where
 
 import Data.Maybe
 import Data.List
+import Data.Array
 
 import Dataset
 import MyUtils
@@ -311,3 +312,107 @@ similarities_query = Sort "Value" $ Graph graphop $ Filter (FNot (Eq "Email" "")
         -- Counts the number of questions with the same result
         get_matching_points :: Row -> Row -> Integer
         get_matching_points row1 row2 = sum $ zipWith (\value1 value2 -> if value1 == value2 then 1 else 0) (tail row1) (tail row2)
+
+
+{-
+	TASK SET 4
+-}
+
+qlist_to_list :: QResult -> [String]
+qlist_to_list (List list) = list
+
+qtable_to_table :: QResult -> Table
+qtable_to_table (Table table) = table
+
+correct_table :: String -> CSV -> CSV -> CSV
+correct_table column bad_table_csv ref_table_csv = write_csv reconstruct_table
+    where
+        -- Get the bad column from the typo table
+        t_column :: [Value]
+        t_column = qlist_to_list $ eval $ AsList column (FromCSV bad_table_csv)
+
+        -- Get the good column from the ref table
+        ref_column :: [Value]
+        ref_column = qlist_to_list $ eval $ AsList column (FromCSV ref_table_csv)
+
+        -- Typo table converted from CSV to Table
+        bad_table :: Table
+        bad_table = read_csv bad_table_csv
+
+        -- Ref table converted from CSV to Table
+        ref_table :: Table
+        ref_table = read_csv ref_table_csv
+
+        -- Get the values that have typo's in them
+        get_typos :: [Value]
+        get_typos = foldr (\value acc -> if get_element_index value ref_column == -1 then value : acc else acc) [] t_column
+
+        -- Receive a value with typo and return the correct value
+        get_correction :: Value -> Value
+        get_correction val = fst $ best_correction $ map (\ref_value -> (ref_value, distance val ref_value)) ref_column
+            where
+                best_correction :: [(Value, Int)] -> (Value, Int)
+                best_correction corrections = foldr (\corr acc -> if snd corr < snd acc then corr else acc) (head corrections) corrections
+
+        -- Checks if a row has a typo
+        is_typo_row :: Row -> Bool
+        is_typo_row row = get_element_index (head row) get_typos /= -1
+
+        -- Reconstructs the typo table, replacing the typo's with the correct values
+        reconstruct_table :: Table
+        reconstruct_table = map (\row -> if is_typo_row row then get_correction (head row) : tail row else row) bad_table
+
+        -- Calculates the distance between two values
+        distance :: Value -> Value -> Int
+        distance a b = dp ! (length_a, length_b)
+            where
+                length_a = length a
+                length_b = length b
+
+                array_a = array (1, length_a) $ zip [1..] a
+                array_b = array (1, length_b) $ zip [1..] b
+
+                bounds = ((0, 0), (length_a, length_b))
+
+                -- Matrix where I store the result of previous subproblems
+                dp = array bounds [(ij, dist ij) | ij <- range bounds]
+
+                dist (0, j) = j
+                dist (i, 0) = i
+                dist (i, j)
+                    | array_a ! i == array_b ! j = dp ! (i - 1, j - 1)
+                    | otherwise = 1 + minimum [dp ! (i - 1, j), dp ! (i, j - 1), dp ! (i - 1, j - 1)]
+
+
+-- grades :: CSV -> CSV -> CSV -> CSV -> CSV
+grades t1 t2 t3 t4 = write_csv $ (:) ["Nume", "Punctaj Teme", "Punctaj Curs", "Punctaj Exam", "Punctaj Total"] $ sortBy cmp $ map (\row -> row ++ [total_grade row]) $ tail combined_tables
+    where
+        cmp :: Row -> Row -> Ordering
+        cmp row1 row2
+            | head row1 < head row2 = LT
+            | head row1 > head row2 = GT
+            | otherwise = EQ
+
+        email_map_table = read_csv $ correct_table "Nume" t1 t2
+
+        hw_grades_table = (:) ["Nume", "Punctaj Teme"] $ map (\row -> [head row, get_hw_grade row]) $ tail $ read_csv t2
+            where
+                get_hw_grade :: Row -> Value
+                get_hw_grade row = float_to_string $ sum $ map string_to_float $ tail row
+
+        exam_grades_table = (:) ["Nume", "Punctaj Exam"] $ tail $ compute_exam_grades $ read_csv t3
+
+        lecture_grades_table = (:) ["Nume", "Punctaj Curs"] $ map (\row -> [head row, get_lecture_grade row]) $ tail $ map (\row -> get_name (head row) : tail row) $ qtable_to_table $ eval $ Filter (FNot (Eq "Email" "")) $ FromCSV t4
+            where
+                get_name :: Value -> Value
+                get_name email = head $ email_map_table !! (+) 1 (get_element_index email $ as_list "Email" email_map_table)
+
+                get_lecture_grade :: Row -> Value
+                get_lecture_grade row = float_to_string $ 2 * sum (map string_to_float $ tail row) / fromIntegral (length row - 1)
+
+        combined_tables = tjoin "Nume" (tjoin "Nume" hw_grades_table lecture_grades_table) exam_grades_table
+
+        total_grade :: Row -> Value
+        total_grade row
+            | string_to_float (row !! 1) + string_to_float (row !! 2) < 2.5 || string_to_float (row !! 3) < 2.5 = "4.00"
+            | otherwise = float_to_string (minimum [string_to_float (row !! 1) + string_to_float (row !! 2), 5] + string_to_float (row !! 3))
